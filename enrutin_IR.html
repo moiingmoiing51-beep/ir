@@ -1,0 +1,3509 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>엔루틴 IR Deck — 15 Slides</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --primary: #0052ff;
+    --primary-active: #003ecc;
+    --primary-soft: #e6edff;
+    --accent-lime: #c8ff5e;
+    --accent-amber: #f4b000;
+
+    --canvas: #ffffff;
+    --surface-soft: #f7f7f7;
+    --surface-strong: #eef0f3;
+    --surface-dark: #0a0b0d;
+    --surface-dark-elevated: #16181c;
+    --surface-dark-card: #1f2227;
+
+    --hairline: #dee1e6;
+    --hairline-soft: #eef0f3;
+    --hairline-dark: #2a2d33;
+
+    --ink: #0a0b0d;
+    --body: #5b616e;
+    --muted: #7c828a;
+    --muted-soft: #a8acb3;
+    --on-dark: #ffffff;
+    --on-dark-soft: #a8acb3;
+    --on-dark-muted: #6b7079;
+
+    --semantic-up: #05b169;
+    --semantic-down: #cf202f;
+
+    --font-display: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-body: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #2a2d33;
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body { padding: 48px 24px 96px; min-height: 100vh; }
+
+  .deck-header {
+    max-width: 1280px;
+    margin: 0 auto 32px;
+    color: #a8acb3;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .deck-header strong { color: #fff; font-weight: 600; }
+
+  .slide {
+    width: 1280px;
+    height: 720px;
+    margin: 0 auto 32px;
+    background: var(--canvas);
+    color: var(--ink);
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.18);
+    border-radius: 4px;
+  }
+  .slide.dark { background: var(--surface-dark); color: var(--on-dark); }
+
+  .slide-chrome {
+    position: absolute;
+    top: 28px; left: 56px; right: 56px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+    z-index: 5;
+  }
+  .slide.dark .slide-chrome { color: var(--on-dark-muted); }
+  .slide-chrome .wordmark {
+    color: var(--ink); font-weight: 700;
+    letter-spacing: -0.01em; text-transform: none; font-size: 14px;
+  }
+  .slide.dark .slide-chrome .wordmark { color: var(--on-dark); }
+  .page-num { font-family: var(--font-mono); }
+
+  .section-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 16px;
+  }
+  .section-label::before {
+    content: ""; width: 24px; height: 1px; background: var(--primary);
+  }
+  .slide.dark .section-label { color: var(--accent-lime); }
+  .slide.dark .section-label::before { background: var(--accent-lime); }
+
+  .hl-display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+  .slide.dark .hl-display { color: var(--on-dark); }
+  .hl-display .accent { color: var(--primary); }
+  .slide.dark .hl-display .accent { color: var(--accent-lime); }
+
+  /* Default content frame (consistent across slides) */
+  .slide .content {
+    padding: 64px 56px 44px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ============== SLIDE 1 — COVER ============== */
+  #slide-1 { background: var(--surface-dark); color: var(--on-dark); }
+  #slide-1 .slide-chrome { color: var(--on-dark-muted); }
+  #slide-1 .slide-chrome .wordmark { color: var(--on-dark); }
+
+  .cover-grid {
+    position: absolute;
+    inset: 0;
+    padding: 80px 80px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .cover-eyebrow {
+    color: var(--accent-lime);
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    margin-top: 56px;
+  }
+  .cover-headline {
+    font-family: var(--font-display);
+    font-size: 78px; font-weight: 400;
+    line-height: 1.02; letter-spacing: -0.04em;
+    margin-top: 24px;
+    max-width: 1000px;
+  }
+  .cover-headline .accent { color: var(--accent-lime); }
+  .cover-sub {
+    color: var(--on-dark-soft);
+    font-size: 17px;
+    line-height: 1.5;
+    margin-top: 22px;
+    max-width: 640px;
+  }
+  .cover-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+    padding-top: 28px;
+    border-top: 1px solid var(--hairline-dark);
+  }
+  .cover-meta-item .label {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--on-dark-muted);
+    margin-bottom: 8px;
+  }
+  .cover-meta-item .value {
+    color: var(--on-dark);
+    font-size: 14px;
+    line-height: 1.45;
+  }
+  .cover-meta-item .value strong { font-weight: 600; }
+
+  .cover-decoration {
+    position: absolute;
+    right: -60px; top: 130px;
+    width: 520px; height: 360px;
+    pointer-events: none;
+  }
+  .cover-decoration .ring { position: absolute; border: 1px solid var(--hairline-dark); border-radius: 50%; }
+  .cover-decoration .ring.r1 { width: 360px; height: 360px; right: 60px; top: 0; }
+  .cover-decoration .ring.r2 { width: 240px; height: 240px; right: 120px; top: 60px; border-color: rgba(200,255,94,0.18); }
+  .cover-decoration .ring.r3 { width: 120px; height: 120px; right: 180px; top: 120px; border-color: var(--accent-lime); }
+  .cover-decoration .dot { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-lime); right: 237px; top: 177px; }
+
+  /* ============== SLIDE 2 — EXECUTIVE SUMMARY ============== */
+  #slide-2 .hl-display {
+    font-size: 42px;
+    line-height: 1.1;
+    max-width: 900px;
+  }
+
+  .summary-grid {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 1px;
+    background: var(--hairline);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    overflow: hidden;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .summary-block {
+    background: var(--canvas);
+    padding: 22px 28px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .summary-block .num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--primary);
+    margin-bottom: 4px;
+  }
+  .summary-block h3 {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .summary-block ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .summary-block li {
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: var(--body);
+    padding-left: 12px;
+    position: relative;
+  }
+  .summary-block li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 9px;
+    width: 4px; height: 4px;
+    background: var(--ink);
+    border-radius: 50%;
+  }
+  .summary-block li strong { color: var(--ink); font-weight: 600; }
+  .summary-block li .price {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  /* ============== SLIDE 3 — TRACTION ============== */
+  #slide-3 .hl-display {
+    font-size: 36px;
+    line-height: 1.1;
+    max-width: 1000px;
+  }
+
+  .traction-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--hairline);
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+    margin-top: 22px;
+  }
+  .stat {
+    background: var(--canvas);
+    padding: 18px 20px;
+  }
+  .stat .label {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .stat .figure {
+    font-family: var(--font-display);
+    font-size: 36px; font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .stat .figure .unit {
+    font-size: 16px;
+    color: var(--body);
+    font-weight: 400;
+    margin-left: 3px;
+  }
+  .stat .desc {
+    font-size: 12px;
+    color: var(--body);
+    margin-top: 8px;
+    line-height: 1.4;
+  }
+
+  .traction-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    margin-top: 24px;
+    flex: 1;
+    min-height: 0;
+  }
+  .roster h4, .trackrecord h4 {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .roster-group { margin-bottom: 12px; }
+  .roster-group .group-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .roster-names {
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  .roster-names strong { font-weight: 600; }
+  .trackrecord ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .trackrecord li {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--body);
+    padding-left: 20px;
+    position: relative;
+  }
+  .trackrecord li::before {
+    content: "✓";
+    position: absolute;
+    left: 0; top: 0;
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 12px;
+  }
+  .trackrecord li strong { color: var(--ink); font-weight: 600; }
+
+  /* ============== SLIDE 4 — WHY CONDITIONING ============== */
+  #slide-4 .hl-display.why-headline {
+    font-size: 50px;
+    line-height: 1.05;
+    max-width: 950px;
+  }
+  .why-sub {
+    font-size: 18px;
+    color: var(--body);
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+  }
+  .why-sub .equation {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .why-body {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 32px;
+    flex: 1;
+    min-height: 0;
+  }
+  .survey-card {
+    background: var(--surface-soft);
+    border-radius: 16px;
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+  }
+  .survey-card .qbox {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .survey-card .question {
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.5;
+    margin-bottom: 22px;
+    font-weight: 500;
+  }
+  .survey-card .question::before, .survey-card .question::after {
+    content: '"';
+    color: var(--primary);
+    font-weight: 700;
+  }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .bar-row .bar-label {
+    width: 160px;
+    flex-shrink: 0;
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .bar-row.lead .bar-label { font-weight: 700; }
+  .bar-track {
+    flex: 1;
+    height: 26px;
+    background: var(--surface-strong);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 12px;
+    color: #fff;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .bar-row:not(.lead) .bar-fill {
+    background: #c4ccd6;
+    color: var(--ink);
+  }
+  .survey-meta {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--hairline);
+    display: flex;
+    justify-content: space-between;
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .survey-meta strong { color: var(--ink); font-weight: 600; }
+  .survey-meta .mono { font-family: var(--font-mono); }
+  .why-side {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+  }
+  .respondent-card {
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 16px 22px;
+  }
+  .respondent-card h5 {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .respondent-table {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .respondent-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13.5px;
+    line-height: 1.4;
+  }
+  .respondent-row .name { color: var(--body); }
+  .respondent-row .count { font-family: var(--font-mono); color: var(--ink); font-weight: 500; }
+  .respondent-row.total {
+    padding-top: 8px;
+    border-top: 1px solid var(--hairline-soft);
+    margin-top: 2px;
+  }
+  .respondent-row.total .name,
+  .respondent-row.total .count { font-weight: 700; color: var(--ink); }
+  .insight-box {
+    background: var(--ink);
+    color: var(--on-dark);
+    border-radius: 12px;
+    padding: 18px 22px;
+    flex: 1;
+  }
+  .insight-box h5 {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent-lime);
+    margin-bottom: 10px;
+  }
+  .insight-box p {
+    font-family: var(--font-display);
+    font-size: 19px;
+    line-height: 1.25;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+  }
+  .insight-box .desc {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--on-dark-soft);
+    margin-top: 8px;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  /* ============== SLIDE 5 — MARKET STRATEGY (DARK) ============== */
+  #slide-5 { background: var(--surface-dark); color: var(--on-dark); }
+  #slide-5 .slide-chrome { color: var(--on-dark-muted); }
+  #slide-5 .slide-chrome .wordmark { color: var(--on-dark); }
+
+  .market-headline {
+    font-family: var(--font-display);
+    font-size: 38px; font-weight: 400;
+    line-height: 1.12; letter-spacing: -0.02em;
+    color: var(--on-dark);
+    max-width: 1000px;
+  }
+  .market-headline .accent { color: var(--accent-lime); }
+  .market-sub {
+    font-size: 15px;
+    color: var(--on-dark-soft);
+    margin-top: 12px;
+    line-height: 1.5;
+    max-width: 880px;
+  }
+  .category-grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.05fr;
+    gap: 14px;
+    flex: 1;
+    min-height: 0;
+  }
+  .cat-card {
+    background: var(--surface-dark-elevated);
+    border: 1px solid var(--hairline-dark);
+    border-radius: 14px;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+  }
+  .cat-card.featured {
+    background: linear-gradient(180deg, #16181c 0%, #1f2a14 100%);
+    border-color: var(--accent-lime);
+  }
+  .cat-card .head {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--on-dark-muted);
+    margin-bottom: 4px;
+  }
+  .cat-card.featured .head { color: var(--accent-lime); }
+  .cat-card .title {
+    font-size: 15.5px; font-weight: 600;
+    color: var(--on-dark);
+    margin-bottom: 14px;
+    letter-spacing: -0.005em;
+  }
+  .cat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .cat-item {
+    display: flex;
+    gap: 9px;
+    align-items: baseline;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .cat-item .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--on-dark-muted);
+    flex-shrink: 0;
+    transform: translateY(-2px);
+  }
+  .cat-card.featured .cat-item .dot { background: var(--accent-lime); }
+  .cat-item strong { font-weight: 600; color: var(--on-dark); }
+  .cat-item .meta { color: var(--on-dark-muted); font-size: 12px; }
+  .enrutin-row {
+    margin-top: 8px;
+    padding: 11px 14px;
+    background: rgba(200, 255, 94, 0.08);
+    border: 1px solid var(--accent-lime);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .enrutin-row .crown { font-size: 14px; }
+  .enrutin-row .label { font-weight: 700; color: var(--accent-lime); font-size: 14px; }
+  .enrutin-row .meta { color: var(--on-dark-soft); font-size: 12px; margin-left: auto; }
+  .cat-card .footnote {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--hairline-dark);
+    font-size: 11px;
+    color: var(--on-dark-muted);
+    line-height: 1.45;
+  }
+  .cat-card.featured .footnote { border-top-color: rgba(200,255,94,0.2); }
+  .market-footer {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hairline-dark);
+    display: grid;
+    grid-template-columns: 2fr 1.2fr;
+    gap: 28px;
+    align-items: end;
+  }
+  .three-assets {
+    display: flex;
+    gap: 16px;
+  }
+  .asset-pill {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+  }
+  .asset-pill .num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent-lime);
+    font-weight: 600;
+  }
+  .asset-pill .name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--on-dark);
+  }
+  .asset-pill .desc {
+    font-size: 11px;
+    color: var(--on-dark-muted);
+    line-height: 1.4;
+  }
+  .closing-line {
+    font-family: var(--font-display);
+    font-size: 16px;
+    line-height: 1.4;
+    color: var(--on-dark-soft);
+    text-align: right;
+    letter-spacing: -0.01em;
+  }
+  .closing-line strong { color: var(--accent-lime); font-weight: 500; }
+
+  /* ============== SLIDE 6 — UNTAPPED MARKET ============== */
+  #slide-6 .hl-display {
+    font-size: 40px;
+    line-height: 1.08;
+    max-width: 1000px;
+  }
+  .market-rows {
+    margin-top: 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .mr-head {
+    display: grid;
+    grid-template-columns: 220px 1.1fr 1.1fr 1.1fr 1.4fr;
+    padding: 0 22px 10px;
+    border-bottom: 1px solid var(--ink);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .mr-row {
+    display: grid;
+    grid-template-columns: 220px 1.1fr 1.1fr 1.1fr 1.4fr;
+    padding: 13px 22px;
+    border-bottom: 1px solid var(--hairline);
+    align-items: center;
+  }
+  .mr-row.covered { background: var(--surface-soft); }
+  .mr-row.untapped { background: var(--canvas); }
+  .mr-row .seg {
+    font-size: 14.5px; font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .mr-row .seg .meta {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--muted);
+    margin-top: 2px;
+    letter-spacing: 0;
+  }
+  .mr-row .cell {
+    font-size: 13px;
+    color: var(--body);
+    line-height: 1.4;
+  }
+  .status-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px; font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 100px;
+    letter-spacing: -0.005em;
+  }
+  .status-tag.full { background: var(--ink); color: var(--accent-lime); }
+  .status-tag.gap { background: #fef0f0; color: var(--semantic-down); }
+  .status-tag::before {
+    content: "";
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .market-bottom {
+    margin-top: 18px;
+    padding: 18px 24px;
+    background: var(--ink);
+    color: var(--on-dark);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+  .market-bottom .icon {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: rgba(200,255,94,0.14);
+    color: var(--accent-lime);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .market-bottom p {
+    font-family: var(--font-display);
+    font-size: 17px;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+  .market-bottom p strong { color: var(--accent-lime); font-weight: 500; }
+
+  /* ============== SLIDE 7 — TWO BOTTLENECKS ============== */
+  #slide-7 .hl-display {
+    font-size: 42px;
+    line-height: 1.08;
+    max-width: 1000px;
+  }
+  .bottleneck-grid {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    flex: 1;
+    min-height: 0;
+  }
+  .bn-card {
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    background: var(--canvas);
+    min-height: 0;
+  }
+  .bn-card .label {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 4px;
+  }
+  .bn-card h3 {
+    font-family: var(--font-display);
+    font-size: 22px; font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+  .bn-viz {
+    margin-bottom: 14px;
+    padding: 16px;
+    background: var(--surface-soft);
+    border-radius: 10px;
+  }
+  .human-viz {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: space-between;
+  }
+  .human-viz .one-side { text-align: center; flex-shrink: 0; }
+  .human-viz .one-circle {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--accent-lime);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 16px;
+    margin: 0 auto 6px;
+  }
+  .human-viz .one-side .lbl { font-size: 11px; color: var(--muted); font-weight: 600; }
+  .human-viz .arrow {
+    flex: 1;
+    text-align: center;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .human-viz .arrow .line {
+    height: 1px;
+    background: var(--hairline);
+    margin: 6px 0;
+    position: relative;
+  }
+  .human-viz .arrow .line::after {
+    content: "→";
+    position: absolute;
+    right: -2px; top: -8px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .human-viz .many-side { flex-shrink: 0; }
+  .human-viz .dot-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 3px;
+    width: 132px;
+  }
+  .human-viz .dot-grid .d {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--hairline);
+  }
+  .human-viz .dot-grid .d.filled { background: var(--ink); }
+  .human-viz .many-side .lbl {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+    text-align: center;
+    margin-top: 6px;
+  }
+  .meas-viz {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .meas-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .meas-row .meas-label {
+    width: 70px;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .meas-track {
+    flex: 1;
+    height: 24px;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid var(--hairline);
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .meas-track .dot {
+    position: absolute;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--primary);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .meas-track.daily .dot { background: var(--semantic-up); }
+  .meas-caption {
+    font-size: 10.5px;
+    color: var(--muted);
+    padding-left: 82px;
+  }
+  .bn-points {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-top: auto;
+  }
+  .bn-points li {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--body);
+    padding-left: 20px;
+    position: relative;
+  }
+  .bn-points li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 7px;
+    width: 8px; height: 8px;
+    background: var(--primary);
+    border-radius: 1px;
+  }
+  .bn-points li strong { color: var(--ink); font-weight: 600; }
+  .bottleneck-conclusion {
+    margin-top: 16px;
+    padding: 14px 24px;
+    background: var(--surface-strong);
+    border-radius: 12px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .bottleneck-conclusion strong { color: var(--primary); font-weight: 600; }
+
+  /* ============== SLIDE 8 — WHAT IS CONDITIONING ============== */
+  #slide-8 .hl-display {
+    font-size: 40px;
+    line-height: 1.08;
+    max-width: 980px;
+  }
+  #slide-8 .hl-sub {
+    font-size: 14px;
+    color: var(--body);
+    margin-top: 10px;
+    line-height: 1.5;
+    max-width: 880px;
+  }
+  .cond-body {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    flex: 1;
+    min-height: 0;
+  }
+  .hex-stage {
+    background: var(--surface-soft);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+  }
+  .hex-stage .hex-svg {
+    width: 100%;
+    max-width: 380px;
+    height: auto;
+    max-height: 320px;
+  }
+  .case-card {
+    background: var(--ink);
+    color: var(--on-dark);
+    border-radius: 14px;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .case-card .case-label {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-lime);
+    margin-bottom: 10px;
+  }
+  .case-card h4 {
+    font-family: var(--font-display);
+    font-size: 17px; font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    margin-bottom: 14px;
+  }
+  .case-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+  .case-inputs .inp {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12.5px;
+    color: var(--on-dark-soft);
+  }
+  .case-inputs .inp .name { color: var(--on-dark-soft); }
+  .case-inputs .inp .val {
+    font-family: var(--font-mono);
+    color: var(--on-dark);
+    font-weight: 500;
+  }
+  .case-inputs .inp .val.alert { color: var(--accent-lime); }
+  .case-arrow {
+    text-align: center;
+    color: var(--on-dark-muted);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .case-arrow::before, .case-arrow::after {
+    content: "—";
+    margin: 0 6px;
+    color: var(--hairline-dark);
+  }
+  .case-output {
+    background: var(--accent-lime);
+    color: var(--ink);
+    border-radius: 8px;
+    padding: 11px 15px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .case-output strong { font-weight: 700; }
+  .case-footer {
+    margin-top: 12px;
+    font-size: 11.5px;
+    color: var(--on-dark-muted);
+    line-height: 1.5;
+  }
+  .moat-banner {
+    margin-top: 14px;
+    padding: 14px 22px;
+    background: var(--ink);
+    color: var(--on-dark);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .moat-banner .moat-eyebrow {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-lime);
+    flex-shrink: 0;
+  }
+  .moat-banner p {
+    font-family: var(--font-display);
+    font-size: 15px;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+  .moat-banner p strong { color: var(--accent-lime); font-weight: 500; }
+
+  /* ============== SLIDE 9 — 3-PILLAR (DARK) ============== */
+  #slide-9 { background: var(--surface-dark); color: var(--on-dark); }
+  #slide-9 .slide-chrome { color: var(--on-dark-muted); }
+  #slide-9 .slide-chrome .wordmark { color: var(--on-dark); }
+
+  #slide-9 .hl-display {
+    font-size: 38px;
+    line-height: 1.1;
+    max-width: 1100px;
+  }
+  #slide-9 .hl-sub {
+    font-size: 14px;
+    color: var(--on-dark-soft);
+    margin-top: 10px;
+    line-height: 1.5;
+    max-width: 900px;
+  }
+  .pillar-grid {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    flex: 1;
+    min-height: 0;
+  }
+  .pillar {
+    background: var(--surface-dark-elevated);
+    border: 1px solid var(--hairline-dark);
+    border-radius: 14px;
+    padding: 18px 22px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 0;
+  }
+  .pillar.focus {
+    border-color: var(--accent-lime);
+    background: linear-gradient(180deg, #16181c 0%, #1a2010 100%);
+  }
+  .pillar.future {
+    border-style: dashed;
+    border-color: var(--hairline-dark);
+    background: var(--surface-dark);
+    opacity: 0.92;
+  }
+  .pillar-no {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--on-dark-muted);
+    letter-spacing: 0.04em;
+  }
+  .pillar.focus .pillar-no { color: var(--accent-lime); }
+  .pillar h3 {
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    color: var(--on-dark);
+  }
+  .pillar .role {
+    font-size: 12px;
+    color: var(--on-dark-soft);
+    margin-bottom: 14px;
+    line-height: 1.4;
+  }
+  .pillar-stages {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 12px;
+  }
+  .stage {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    line-height: 1.4;
+  }
+  .stage.done { background: rgba(255,255,255,0.04); color: var(--on-dark-soft); }
+  .stage.now { background: rgba(200,255,94,0.1); color: var(--on-dark); }
+  .pillar.future .stage.now { background: rgba(244,176,0,0.1); color: var(--on-dark); }
+  .stage.next { background: rgba(255,255,255,0.02); color: var(--on-dark-muted); }
+  .stage .marker {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.08);
+    margin-top: 1px;
+    letter-spacing: 0.03em;
+  }
+  .stage.done .marker { background: var(--on-dark-muted); color: var(--surface-dark); }
+  .stage.now .marker { background: var(--accent-lime); color: var(--ink); }
+  .pillar.future .stage.now .marker { background: var(--accent-amber); color: var(--ink); }
+  .stage.next .marker { background: rgba(255,255,255,0.1); color: var(--on-dark-muted); }
+  .stage strong { color: var(--on-dark); font-weight: 600; }
+  .pillar-tag {
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid var(--hairline-dark);
+    font-size: 10.5px;
+    color: var(--on-dark-muted);
+    line-height: 1.4;
+  }
+  .pillar.future .pillar-tag {
+    color: var(--accent-amber);
+    font-weight: 500;
+  }
+  .focus-banner {
+    position: absolute;
+    top: -9px;
+    right: 16px;
+    background: var(--accent-lime);
+    color: var(--ink);
+    padding: 3px 9px;
+    border-radius: 100px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .pillar-footer {
+    margin-top: 16px;
+    padding: 12px 22px;
+    background: var(--surface-dark-elevated);
+    border-left: 3px solid var(--accent-lime);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+  }
+  .pillar-footer .lbl {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-lime);
+  }
+  .pillar-footer .msg {
+    font-size: 13px;
+    color: var(--on-dark);
+    line-height: 1.5;
+  }
+  .pillar-footer .msg strong { color: var(--accent-lime); font-weight: 500; }
+
+  /* ============== SLIDE 10 — 3-TIER PRODUCT ============== */
+  #slide-10 .hl-display {
+    font-size: 36px;
+    line-height: 1.1;
+    max-width: 980px;
+  }
+  #slide-10 .hl-sub {
+    font-size: 13.5px;
+    color: var(--body);
+    margin-top: 10px;
+    line-height: 1.5;
+    max-width: 880px;
+  }
+  .tier-grid {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+  }
+  .tier-card {
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 16px 18px;
+    background: var(--canvas);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 0;
+  }
+  .tier-card.premium {
+    background: var(--ink);
+    color: var(--on-dark);
+    border-color: var(--ink);
+  }
+  .tier-card.light { background: var(--surface-soft); }
+  .tier-flag {
+    position: absolute;
+    top: -7px; left: 18px;
+    background: var(--accent-lime);
+    color: var(--ink);
+    padding: 3px 9px;
+    border-radius: 100px;
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .tier-flag.scale { background: var(--primary); color: #fff; }
+  .tier-header {
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--hairline);
+    margin-bottom: 10px;
+  }
+  .tier-card.premium .tier-header { border-color: var(--hairline-dark); }
+  .tier-name {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .tier-card.premium .tier-name { color: var(--accent-lime); }
+  .tier-price {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin-bottom: 3px;
+  }
+  .tier-price .num {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .tier-card.premium .tier-price .num { color: var(--on-dark); }
+  .tier-price .currency {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--body);
+  }
+  .tier-card.premium .tier-price .currency { color: var(--on-dark-soft); }
+  .tier-price .period {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-left: 3px;
+  }
+  .tier-card.premium .tier-price .period { color: var(--on-dark-muted); }
+  .tier-target {
+    font-size: 12px;
+    color: var(--body);
+    line-height: 1.4;
+  }
+  .tier-card.premium .tier-target { color: var(--on-dark-soft); }
+  .tier-target strong { color: var(--ink); font-weight: 600; }
+  .tier-card.premium .tier-target strong { color: var(--on-dark); }
+  .tier-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-height: 0;
+  }
+  .tier-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .tier-row .row-label {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .tier-card.premium .tier-row .row-label { color: var(--on-dark-muted); }
+  .tier-row .row-val {
+    font-size: 12px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .tier-card.premium .tier-row .row-val { color: var(--on-dark); }
+  .tier-row .row-val .mono {
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+  .ratio-bar {
+    display: flex;
+    height: 7px;
+    background: var(--hairline);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .tier-card.premium .ratio-bar { background: var(--hairline-dark); }
+  .ratio-bar .doc { background: var(--primary); height: 100%; }
+  .ratio-bar .sys { background: var(--accent-lime); height: 100%; }
+  .tier-card.premium .ratio-bar .doc { background: var(--accent-lime); }
+  .tier-card.premium .ratio-bar .sys { background: var(--on-dark-soft); }
+  .ratio-legend {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10.5px;
+    font-family: var(--font-mono);
+    color: var(--muted);
+    margin-top: 3px;
+  }
+  .tier-card.premium .ratio-legend { color: var(--on-dark-muted); }
+  .tier-footer {
+    margin-top: 10px;
+    padding-top: 9px;
+    border-top: 1px solid var(--hairline);
+    font-size: 10.5px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .tier-card.premium .tier-footer { border-color: var(--hairline-dark); color: var(--on-dark-muted); }
+  .product-bottom {
+    margin-top: 14px;
+    padding: 12px 22px;
+    background: var(--ink);
+    color: var(--on-dark);
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 22px;
+  }
+  .product-bottom .pb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .product-bottom .pb .num {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--accent-lime);
+  }
+  .product-bottom .pb .txt {
+    font-size: 12px;
+    color: var(--on-dark);
+    line-height: 1.4;
+  }
+  .product-bottom .pb .txt strong { color: var(--accent-lime); font-weight: 500; }
+
+  /* ============== SLIDE 11 — FUNNEL ============== */
+  #slide-11 .hl-display {
+    font-size: 38px;
+    line-height: 1.1;
+    max-width: 1000px;
+  }
+  #slide-11 .hl-sub {
+    font-size: 14px;
+    color: var(--body);
+    margin-top: 10px;
+    line-height: 1.5;
+    max-width: 900px;
+  }
+  .funnel-body {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 32px;
+    flex: 1;
+    min-height: 0;
+  }
+  .funnel-stage {
+    background: var(--surface-soft);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+  }
+  .funnel-svg {
+    width: 100%;
+    height: 100%;
+    max-height: 460px;
+    display: block;
+  }
+  .funnel-side {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+  }
+  .ltv-card {
+    background: var(--ink);
+    color: var(--on-dark);
+    border-radius: 12px;
+    padding: 16px 20px;
+  }
+  .ltv-card .lbl {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-lime);
+    margin-bottom: 10px;
+  }
+  .ltv-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+  }
+  .ltv-grid .ltv-cell {
+    border-left: 1px solid var(--hairline-dark);
+    padding-left: 12px;
+  }
+  .ltv-grid .ltv-cell:first-child { border-left: none; padding-left: 0; }
+  .ltv-grid .num {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--on-dark);
+    margin-bottom: 5px;
+  }
+  .ltv-grid .num .unit { font-size: 12px; color: var(--on-dark-soft); margin-left: 2px; }
+  .ltv-grid .desc {
+    font-size: 11px;
+    color: var(--on-dark-soft);
+    line-height: 1.4;
+  }
+  .insight-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    flex: 1;
+    min-height: 0;
+  }
+  .insight-row {
+    display: flex;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 1px solid var(--hairline);
+    border-radius: 10px;
+    background: var(--canvas);
+  }
+  .insight-row .num-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--primary);
+    flex-shrink: 0;
+    width: 24px;
+  }
+  .insight-row .txt {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .insight-row .txt strong { font-weight: 600; }
+  .insight-row .txt .accent { color: var(--primary); font-weight: 600; }
+
+  /* ============== SLIDE 12 — GTM ============== */
+  #slide-12 .hl-display {
+    font-size: 40px;
+    line-height: 1.1;
+    max-width: 1000px;
+  }
+  #slide-12 .hl-sub {
+    font-size: 13.5px;
+    color: var(--body);
+    margin-top: 10px;
+    line-height: 1.5;
+    max-width: 900px;
+  }
+  .gtm-grid {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: 1.05fr 1.05fr 0.9fr;
+    gap: 14px;
+    flex: 1;
+    min-height: 0;
+  }
+  .channel-card {
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    padding: 18px 22px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 0;
+  }
+  .channel-card.featured {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-soft);
+  }
+  .channel-card.future {
+    background: var(--surface-soft);
+    border-style: dashed;
+  }
+  .channel-tag {
+    position: absolute;
+    top: -9px; left: 18px;
+    background: var(--primary); color: #fff;
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 100px;
+  }
+  .channel-card.future .channel-tag {
+    background: var(--accent-amber); color: var(--ink);
+  }
+  .ch-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--hairline);
+    margin-bottom: 12px;
+  }
+  .ch-name {
+    font-family: var(--font-display);
+    font-size: 22px; font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .ch-status {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .ch-section { margin-bottom: 11px; }
+  .ch-section .lbl {
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .ch-section ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .ch-section li {
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--body);
+    padding-left: 12px;
+    position: relative;
+  }
+  .ch-section li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+  }
+  .ch-section li strong { color: var(--ink); font-weight: 600; }
+  .ch-section li .pill {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--primary);
+    background: var(--primary-soft);
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-left: 3px;
+  }
+  .ch-foot {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--hairline);
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--body);
+  }
+  .ch-foot strong { color: var(--ink); font-weight: 600; }
+  .ch-traction {
+    background: var(--ink);
+    color: var(--on-dark);
+    padding: 9px 13px;
+    border-radius: 7px;
+    margin-top: 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .ch-traction .num {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    color: var(--accent-lime);
+    font-weight: 600;
+  }
+  .ch-traction .lbl {
+    font-size: 11px;
+    color: var(--on-dark-soft);
+  }
+
+  /* ============== SLIDE 13 — FUNDING ROADMAP (DARK) ============== */
+  #slide-13 { background: var(--surface-dark); color: var(--on-dark); }
+  #slide-13 .slide-chrome { color: var(--on-dark-muted); }
+  #slide-13 .slide-chrome .wordmark { color: var(--on-dark); }
+
+  #slide-13 .hl-display {
+    font-size: 36px;
+    line-height: 1.1;
+    max-width: 1100px;
+  }
+  #slide-13 .hl-sub {
+    font-size: 13.5px;
+    color: var(--on-dark-soft);
+    margin-top: 10px;
+    line-height: 1.5;
+    max-width: 900px;
+  }
+  .roadmap-grid {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+  }
+  .stage-card {
+    background: var(--surface-dark-elevated);
+    border: 1px solid var(--hairline-dark);
+    border-radius: 14px;
+    padding: 16px 18px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .stage-card.now {
+    background: linear-gradient(180deg, #16181c 0%, #1a2010 100%);
+    border-color: var(--accent-lime);
+  }
+  .stage-period {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--on-dark-muted);
+    margin-bottom: 5px;
+    letter-spacing: 0.05em;
+  }
+  .stage-card.now .stage-period { color: var(--accent-lime); }
+  .stage-name {
+    font-family: var(--font-display);
+    font-size: 21px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--on-dark);
+    margin-bottom: 12px;
+  }
+  .stage-cap {
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    padding: 11px 13px;
+    margin-bottom: 12px;
+  }
+  .stage-card.now .stage-cap {
+    background: rgba(200,255,94,0.08);
+    border: 1px solid rgba(200,255,94,0.3);
+  }
+  .stage-cap .cap-lbl {
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--on-dark-muted);
+    margin-bottom: 4px;
+  }
+  .stage-card.now .stage-cap .cap-lbl { color: var(--accent-lime); }
+  .stage-cap .cap-amount {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--on-dark);
+    line-height: 1.2;
+  }
+  .stage-cap .cap-amount .small {
+    font-size: 11.5px;
+    color: var(--on-dark-soft);
+  }
+  .stage-cap .cap-meta {
+    font-size: 10.5px;
+    color: var(--on-dark-soft);
+    margin-top: 3px;
+    line-height: 1.4;
+  }
+  .stage-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 11px;
+  }
+  .stage-list li {
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: var(--on-dark-soft);
+    padding-left: 12px;
+    position: relative;
+  }
+  .stage-list li::before {
+    content: "·";
+    position: absolute;
+    left: 4px;
+    top: -2px;
+    color: var(--on-dark-muted);
+    font-size: 13px;
+  }
+  .stage-list li strong { color: var(--on-dark); font-weight: 600; }
+  .stage-prove {
+    margin-top: auto;
+    padding: 8px 12px;
+    background: var(--surface-dark);
+    border-radius: 7px;
+    border-left: 2px solid var(--on-dark-muted);
+  }
+  .stage-card.now .stage-prove { border-left-color: var(--accent-lime); }
+  .stage-prove .lbl {
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--on-dark-muted);
+    margin-bottom: 2px;
+  }
+  .stage-prove .txt {
+    font-size: 11px;
+    color: var(--on-dark);
+    line-height: 1.4;
+  }
+  .efficiency-banner {
+    margin-top: 14px;
+    background: var(--accent-lime);
+    color: var(--ink);
+    border-radius: 10px;
+    padding: 14px 22px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 22px;
+    align-items: center;
+  }
+  .efficiency-banner .big-num {
+    font-family: var(--font-display);
+    font-size: 40px;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .efficiency-banner .desc {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .efficiency-banner .desc strong { font-weight: 700; }
+  .efficiency-banner .plan-b {
+    text-align: right;
+    font-size: 10.5px;
+    color: var(--ink);
+    line-height: 1.45;
+    border-left: 1px solid rgba(0,0,0,0.18);
+    padding-left: 22px;
+    max-width: 220px;
+  }
+  .efficiency-banner .plan-b strong { font-weight: 700; }
+
+  /* ============== SLIDE 14 — FINANCIALS ============== */
+  #slide-14 .hl-display {
+    font-size: 32px;
+    line-height: 1.1;
+    max-width: 980px;
+  }
+  #slide-14 .hl-sub {
+    font-size: 13px;
+    color: var(--body);
+    margin-top: 8px;
+    line-height: 1.5;
+    max-width: 880px;
+  }
+  .fin-body {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 18px;
+    flex: 1;
+    min-height: 0;
+  }
+  .fin-table {
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--canvas);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .fin-thead {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    background: var(--surface-soft);
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--hairline);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .fin-thead .right { text-align: right; }
+  .fin-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    padding: 8px 18px;
+    border-bottom: 1px solid var(--hairline-soft);
+    align-items: center;
+  }
+  .fin-row.section-row {
+    background: var(--surface-soft);
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-bottom: 1px solid var(--hairline);
+    grid-template-columns: 1fr;
+  }
+  .fin-row.total {
+    background: var(--ink);
+    color: var(--on-dark);
+    border-bottom: none;
+    padding: 11px 18px;
+  }
+  .fin-row.total .label { font-weight: 700; color: var(--on-dark); }
+  .fin-row.total .val { color: var(--accent-lime); font-weight: 600; }
+  .fin-row .label {
+    font-size: 12.5px;
+    color: var(--ink);
+  }
+  .fin-row .label .meta {
+    display: block;
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+  .fin-row .val {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink);
+    text-align: right;
+    font-weight: 500;
+  }
+  .fin-row.future .val { color: var(--muted-soft); }
+  .fin-foot {
+    padding: 8px 18px;
+    background: var(--surface-soft);
+    font-size: 10.5px;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.5;
+  }
+  .ms-side {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+  }
+  .ms-card {
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .ms-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .ms-head h4 {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .ms-head .h-meta {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+  .milestones {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .ms-item {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 10px;
+    align-items: start;
+    padding: 5px 0;
+  }
+  .ms-item .qtr {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--primary);
+    background: var(--primary-soft);
+    padding: 2px 5px;
+    border-radius: 4px;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+  .ms-item .desc {
+    font-size: 11.5px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .ms-item .desc strong { font-weight: 600; }
+  .kpi-card {
+    background: var(--ink);
+    color: var(--on-dark);
+    border-radius: 12px;
+    padding: 14px 18px;
+  }
+  .kpi-card .lbl {
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-lime);
+    margin-bottom: 8px;
+  }
+  .kpi-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .kpi-list .ki {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11.5px;
+    color: var(--on-dark-soft);
+  }
+  .kpi-list .ki .name { color: var(--on-dark-soft); }
+  .kpi-list .ki .val {
+    font-family: var(--font-mono);
+    color: var(--accent-lime);
+    font-weight: 500;
+  }
+
+  /* ============== SLIDE 15 — TEAM & ASK (DARK) ============== */
+  #slide-15 { background: var(--surface-dark); color: var(--on-dark); }
+  #slide-15 .slide-chrome { color: var(--on-dark-muted); }
+  #slide-15 .slide-chrome .wordmark { color: var(--on-dark); }
+
+  #slide-15 .hl-display {
+    font-size: 36px;
+    line-height: 1.08;
+    max-width: 1000px;
+  }
+  .closing-body {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 24px;
+    flex: 1;
+    min-height: 0;
+  }
+  .team-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .team-head {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--on-dark-muted);
+    margin-bottom: 2px;
+  }
+  .person-card {
+    background: var(--surface-dark-elevated);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .person-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1f2227 0%, #2a2d33 100%);
+    border: 1px solid var(--hairline-dark);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--accent-lime);
+    letter-spacing: -0.02em;
+  }
+  .person-info { flex: 1; min-width: 0; }
+  .person-info .role-tag {
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-lime);
+    margin-bottom: 3px;
+  }
+  .person-info h4 {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    color: var(--on-dark);
+    margin-bottom: 3px;
+    line-height: 1.2;
+  }
+  .person-info .credentials {
+    font-size: 11px;
+    color: var(--on-dark-soft);
+    line-height: 1.5;
+  }
+  .person-info .credentials strong { color: var(--on-dark); font-weight: 500; }
+  .person-card.advisor {
+    background: transparent;
+    border: 1px dashed var(--hairline-dark);
+  }
+  .person-card.advisor .person-avatar {
+    background: var(--surface-dark);
+    color: var(--on-dark-muted);
+  }
+  .person-card.advisor .role-tag { color: var(--accent-amber); }
+  .ask-block {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ask-head {
+    background: var(--accent-lime);
+    color: var(--ink);
+    border-radius: 12px;
+    padding: 12px 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .ask-head .ask-cell .lbl {
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.6;
+    margin-bottom: 3px;
+  }
+  .ask-head .ask-cell .val {
+    font-family: var(--font-display);
+    font-size: 21px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .ask-head .ask-cell .val .small {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  .uop-card {
+    background: var(--surface-dark-elevated);
+    border-radius: 12px;
+    padding: 14px 20px;
+  }
+  .uop-card .lbl {
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-lime);
+    margin-bottom: 9px;
+  }
+  .uop-bar {
+    display: flex;
+    height: 9px;
+    background: var(--surface-dark);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 9px;
+  }
+  .uop-bar .seg { height: 100%; }
+  .uop-bar .seg.s1 { background: var(--accent-lime); }
+  .uop-bar .seg.s2 { background: #8aa940; }
+  .uop-bar .seg.s3 { background: #5b6e2c; }
+  .uop-bar .seg.s4 { background: #3d4a1d; }
+  .uop-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 16px;
+  }
+  .uop-row {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 11px;
+  }
+  .uop-row .dot { width: 7px; height: 7px; border-radius: 2px; flex-shrink: 0; }
+  .uop-row .dot.s1 { background: var(--accent-lime); }
+  .uop-row .dot.s2 { background: #8aa940; }
+  .uop-row .dot.s3 { background: #5b6e2c; }
+  .uop-row .dot.s4 { background: #3d4a1d; }
+  .uop-row .name { color: var(--on-dark); flex: 1; }
+  .uop-row .pct { font-family: var(--font-mono); color: var(--on-dark); font-weight: 600; }
+  .uop-row .name .meta { color: var(--on-dark-muted); font-size: 10px; display: block; }
+  .uop-foot {
+    margin-top: 9px;
+    padding-top: 9px;
+    border-top: 1px solid var(--hairline-dark);
+    font-size: 10.5px;
+    color: var(--on-dark-soft);
+    line-height: 1.5;
+  }
+  .uop-foot strong { color: var(--accent-amber); font-weight: 600; }
+  .prove-card {
+    background: var(--surface-dark);
+    border: 1px solid var(--hairline-dark);
+    border-radius: 12px;
+    padding: 12px 20px;
+  }
+  .prove-card .lbl {
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--on-dark-muted);
+    margin-bottom: 8px;
+  }
+  .prove-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .prove-list .pi {
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    gap: 7px;
+    font-size: 11.5px;
+    color: var(--on-dark);
+    line-height: 1.4;
+  }
+  .prove-list .pi .n {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--accent-lime);
+    font-weight: 600;
+  }
+  .prove-list .pi strong { font-weight: 600; }
+  .closing-footer {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--hairline-dark);
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 22px;
+  }
+  .closing-tagline {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    color: var(--on-dark-soft);
+    line-height: 1.4;
+    max-width: 580px;
+  }
+  .closing-tagline strong { color: var(--accent-lime); font-weight: 500; }
+  .contact-block {
+    text-align: right;
+    font-size: 11px;
+    color: var(--on-dark-soft);
+    line-height: 1.5;
+  }
+  .contact-block .name {
+    font-size: 13px;
+    color: var(--on-dark);
+    font-weight: 600;
+  }
+  .contact-block .v {
+    font-family: var(--font-mono);
+    color: var(--accent-lime);
+  }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .deck-header { display: none; }
+    .slide { box-shadow: none; margin: 0; page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck-header">
+  <div>㈜엔루틴 · <strong>IR Deck 2026</strong> · Seed Round · 15 Slides</div>
+  <div>v3 · 1280×720 (16:9)</div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 1 — COVER -->
+<!-- ============================================================ -->
+<section class="slide dark" id="slide-1">
+  <div class="slide-chrome">
+    <span class="wordmark">enrutin</span>
+    <span class="page-num">01 / 15</span>
+  </div>
+  <div class="cover-decoration">
+    <div class="ring r1"></div>
+    <div class="ring r2"></div>
+    <div class="ring r3"></div>
+    <div class="dot"></div>
+  </div>
+  <div class="cover-grid">
+    <div>
+      <div class="cover-eyebrow">IR Deck — 2026 Seed Round</div>
+      <h1 class="cover-headline">
+        국내 1위 골프 컨디셔닝,<br>
+        <span class="accent">시스템</span>으로 확장합니다.
+      </h1>
+      <p class="cover-sub">5년간 검증된 현장 운영을 시스템으로 복제하여, 시장 대부분을 차지한 미충족 수요를 흡수한다.</p>
+    </div>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <div class="label">Founder &amp; CEO</div>
+        <div class="value"><strong>김희재</strong> Ph.D.<br>광운대학교 겸임교수</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="label">Domain</div>
+        <div class="value">운동생리학 · 스포츠 영양<br>SCI급 국제논문 20여편</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="label">Issued</div>
+        <div class="value">2026 / Seoul, KR<br>㈜엔루틴 · 설립 2022.01</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 2 — EXECUTIVE SUMMARY -->
+<!-- ============================================================ -->
+<section class="slide" id="slide-2">
+  <div class="slide-chrome">
+    <span class="wordmark">enrutin</span>
+    <span class="page-num">02 / 15</span>
+  </div>
+  <div class="content">
+    <div class="section-label">Executive Summary</div>
+    <h2 class="hl-display">
+      검증된 1위가 <span class="accent">시스템</span>으로<br>시장을 확장한다.
+    </h2>
+    <div class="summary-grid">
+      <div class="summary-block">
+        <span class="num">01</span>
+        <h3>Who We Are</h3>
+        <ul>
+          <li><strong>김희재 박사</strong> · 운동생리학 Ph.D.</li>
+          <li>5년간 골프 컨디셔닝 <strong>국내 1위</strong> 운영</li>
+          <li>광운대 겸임교수 · SCI 20여편</li>
+          <li>KLPGA / LPGA 최정상급 관리</li>
+        </ul>
+      </div>
+      <div class="summary-block">
+        <span class="num">02</span>
+        <h3>What We've Proven</h3>
+        <ul>
+          <li>팀 엔루틴 멤버십 <span class="price">1,200만원 × 10명</span></li>
+          <li><strong>3년 연속 100% 매진</strong></li>
+          <li>시즌 재등록률 <span class="price">80%+</span></li>
+          <li>상시 대기열 보유</li>
+        </ul>
+      </div>
+      <div class="summary-block">
+        <span class="num">03</span>
+        <h3>What We're Building</h3>
+        <ul>
+          <li>박사 노하우의 <strong>시스템화</strong></li>
+          <li>3-Tier — Premium <span class="price">1,200</span> · Standard <span class="price">400</span> · Light <span class="price">120</span> 만원</li>
+          <li>Platform · Knowledge Engine · Voice Biomarker</li>
+        </ul>
+      </div>
+      <div class="summary-block">
+        <span class="num">04</span>
+        <h3>Where We're Going</h3>
+        <ul>
+          <li>B2C — 중·하위권 프로 / 주니어 / 유소년</li>
+          <li>B2B — 팀 / 아카데미 (현 5개 적용중)</li>
+          <li>B2G — 인증 컨디셔닝 관리자 자격</li>
+          <li>R&amp;D는 <strong>TIPS 프로그램</strong>으로 분리</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 3 — TRACTION -->
+<!-- ============================================================ -->
+<section class="slide" id="slide-3">
+  <div class="slide-chrome">
+    <span class="wordmark">enrutin</span>
+    <span class="page-num">03 / 15</span>
+  </div>
+  <div class="content">
+    <div class="section-label">Traction</div>
+    <h2 class="hl-display">
+      이미 돈 받고 검증된 사업.<br>
+      <span class="accent">3년 연속 매진</span>된 1,200만원 멤버십, 재등록률 80%.
+    </h2>
+    <div class="traction-stats">
+      <div class="stat">
+        <div class="label">Membership Price</div>
+        <div class="figure">1,200<span class="unit">만원</span></div>
+        <div class="desc">팀 엔루틴 시즌 멤버십<br>10명 한정 정원</div>
+      </div>
+      <div class="stat">
+        <div class="label">Sold-out Streak</div>
+        <div class="figure">3<span class="unit">년 연속</span></div>
+        <div class="desc">100% 매진 + 상시 대기열<br>해외 진출/은퇴 시에만 결원</div>
+      </div>
+      <div class="stat">
+        <div class="label">Retention</div>
+        <div class="figure">80<span class="unit">%+</span></div>
+        <div class="desc">시즌 재등록률<br>사실상 락인(Lock-in) 상태</div>
+      </div>
+      <div class="stat">
+        <div class="label">Survey Dataset</div>
+        <div class="figure">593<span class="unit">명</span></div>
+        <div class="desc">자체 누적 설문 응답<br>2019–현재 6년 누적</div>
+      </div>
+    </div>
+    <div class="traction-body">
+      <div class="roster">
+        <h4>Athletes Under Care</h4>
+        <div class="roster-group">
+          <div class="group-label">LPGA / 해외 투어</div>
+          <div class="roster-names"><strong>고진영</strong>(前 세계 랭킹 1위) · 최혜진 · 이미향</div>
+        </div>
+        <div class="roster-group">
+          <div class="group-label">KLPGA 1부 투어</div>
+          <div class="roster-names">박지영 · 박현경 · 이다연 · <strong>김민별</strong> · 고지우 · 임진영 외 다수</div>
+        </div>
+        <div class="roster-group">
+          <div class="group-label">타 종목 엘리트</div>
+          <div class="roster-names">양현종 · 김선빈 (KBO) · 김보경 · 전진우 외</div>
+        </div>
+      </div>
+      <div class="trackrecord">
+        <h4>Track Record</h4>
+        <ul>
+          <li><strong>KLPGA 이동식 컨디션케어 밴 — 국내 최초</strong> 운영 (2024–)</li>
+          <li><strong>진천선수촌</strong> 영양자문 + 지도자 교육 (2022–2024)</li>
+          <li><strong>KCA</strong>(대한체력코칭협회) 인증 전문가</li>
+          <li><strong>KPGA 주니어</strong> 골프선수 데이터 과학화 사업 (2025–)</li>
+          <li>SSG랜더스 스포츠영양 전문위원 (2022)</li>
+          <li>SCI급 국제논문 20여편 출판</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 4 — WHY CONDITIONING -->
+<!-- ============================================================ -->
+<section class="slide" id="slide-4">
+  <div class="slide-chrome">
+    <span class="wordmark">enrutin</span>
+    <span class="page-num">04 / 15</span>
+  </div>
+  <div class="content">
+    <div class="section-label">Why Conditioning Matters</div>
+    <h2 class="hl-display why-headline">
+      Pro부터 유소년까지,<br>
+      <span class="accent">선수 593명의 답이 같았다.</span>
+    </h2>
+    <div class="why-sub"><span class="equation">실력 × 컨디션 유지 = 우승 확률</span> &nbsp;—&nbsp; 시즌 30+ 경기를 부상 없이 최상 컨디션으로 출전하는 선수가 우승한다.</div>
+    <div class="why-body">
+      <div class="survey-card">
+        <div class="qbox">자체 설문조사 · 2019–현재 누적 · n=593</div>
+        <p class="question">시즌 중 기술적 요소를 제외하고, 경기력에 가장 영향을 많이 주는 요소는 무엇입니까?</p>
+        <div class="bar-row lead">
+          <div class="bar-label">컨디션 / 체력 유지</div>
+          <div class="bar-track"><div class="bar-fill" style="width: 78%;">78%</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">스트레스 / 긴장 관리</div>
+          <div class="bar-track"><div class="bar-fill" style="width: 45%;">45%</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">체중 조절</div>
+          <div class="bar-track"><div class="bar-fill" style="width: 36%;">36%</div></div>
+        </div>
+        <div class="survey-meta">
+          <span>방법론: 온라인 + 컨디셔닝 교육 사전 설문</span>
+          <span class="mono"><strong>n = 593</strong></span>
+        </div>
+      </div>
+      <div class="why-side">
+        <div class="respondent-card">
+          <h5>Respondents</h5>
+          <div class="respondent-table">
+            <div class="respondent-row"><span class="name">KLPGA 프로</span><span class="count">140</span></div>
+            <div class="respondent-row"><span class="name">KPGA 프로</span><span class="count">103</span></div>
+            <div class="respondent-row"><span class="name">유소년 (초·중·고)</span><span class="count">350</span></div>
+            <div class="respondent-row total"><span class="name">총 응답자</span><span class="count">593</span></div>
+          </div>
+        </div>
+        <div class="insight-box">
+          <h5>Key Insight</h5>
+          <p>수준에 무관하게 모든 선수가 컨디션을 1순위로 꼽는다.</p>
+          <p class="desc">유소년부터 LPGA 프로까지 needs가 동일하다는 의미. Light(주니어)부터 Premium(프로)까지 같은 시장 논리가 작동한다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 5 — MARKET STRATEGY (DARK) -->
+<!-- ============================================================ -->
+<section class="slide dark" id="slide-5">
+  <div class="slide-chrome">
+    <span class="wordmark">enrutin</span>
+    <span class="page-num">05 / 15</span>
+  </div>
+  <div class="content">
+    <div class="section-label">Market Strategy</div>
+    <h2 class="market-headline">
+      카테고리 1등이 시장을 정의한다.<br>
+      골프 컨디셔닝의 그 자리는 <span class="accent">엔루틴이 차지했다.</span>
+    </h2>
+    <p class="market-sub">하드웨어만 카테고리 킬러를 만드는 것이 아니다. 서비스 영역에서도 1위는 카테고리 그 자체로 정의된다.</p>
+    <div class="category-grid">
+      <div class="cat-card">
+        <div class="head">Hardware &amp; Gear</div>
+        <div class="title">압도적 점유율의 지배</div>
+        <div class="cat-list">
+          <div class="cat-item"><span class="dot"></span><div><strong>Titleist</strong> <span class="meta">— Golf Ball #1</span></div></div>
+          <div class="cat-item"><span class="dot"></span><div><strong>Bushnell</strong> <span class="meta">— Range Finder #1</span></div></div>
+          <div class="cat-item"><span class="dot"></span><div><strong>TrackMan</strong> <span class="meta">— Swing Analysis #1</span></div></div>
+        </div>
+        <div class="footnote">한번 형성된 브랜드 신뢰는 카테고리 내 독점적 지위를 유지한다.</div>
+      </div>
+      <div class="cat-card">
+        <div class="head">Coaching Service</div>
+        <div class="title">이름 자체가 곧 기준점</div>
+        <div class="cat-list">
+          <div class="cat-item"><span class="dot"></span><div><strong>David Leadbetter</strong> <span class="meta">— Swing Coach #1</span></div></div>
+          <div class="cat-item"><span class="dot"></span><div><strong>Butch Harmon</strong> <span class="meta">— Top-tier Champion Coach</span></div></div>
+          <div class="cat-item"><span class="dot"></span><div><strong>Sean Foley</strong> <span class="meta">— Putting Specialist</span></div></div>
+        </div>
+        <div class="footnote">"누구 출신인가"가 선수의 가치와 신뢰도를 결정한다.</div>
+      </div>
+      <div class="cat-card featured">
+        <div class="head">Conditioning &amp; Performance</div>
+        <div class="title">글로벌 1위 부재의 블루오션</div>
+        <div class="cat-list">
+          <div class="cat-item"><span class="dot"></span><div><strong>EXOS</strong> <span class="meta">— Performance Training, US</span></div></div>
+          <div class="cat-item"><span class="dot"></span><div><strong>P3</strong> <span class="meta">— NBA Movement Assessment</span></div></div>
+        </div>
+        <div class="enrutin-row">
+          <span class="crown">♕</span>
+          <span class="label">ENRUTIN</span>
+          <span class="meta">Conditioning · KR #1</span>
+        </div>
+        <div class="footnote">골프 특화 컨디셔닝은 글로벌에서도 압도적 1위가 부재. 한국에서 선점, 글로벌 확장 가능 위치.</div>
+      </div>
+    </div>
+    <div class="market-footer">
+      <div class="three-assets">
+        <div class="asset-pill">
+          <div class="num">01</div>
+          <div class="name">신뢰의 기준점</div>
+          <div class="desc">선수가 출전 여부까지 위임하는 권위</div>
+        </div>
+        <div class="asset-pill">
+          <div class="num">02</div>
+          <div class="name">영업 Wedge</div>
+          <div class="desc">"최상위 프로가 쓰는 시스템" 하향 확산</div>
+        </div>
+        <div class="asset-pill">
+          <div class="num">03</div>
+          <div class="name">Ground Truth</div>
+          <div class="desc">AI 고도화에 필수인 엘리트 데이터 독점</div>
+        </div>
+      </div>
+      <div class="closing-line">
+        볼은 <strong>타이틀리스트</strong>,<br>
+        스윙은 <strong>레드베터</strong>,<br>
+        컨디셔닝은 — <strong>엔루틴</strong>.
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 6 — UNTAPPED MARKET -->
+<!-- ============================================================ -->
+<section class="slide" id="slide-6">
+  <div class="slide-chrome">
+    <span class="wordmark">enrutin</span>
+    <span class="page-num">06 / 15</span>
+  </div>
+  <div class="content">
+    <div class="section-label">The Problem · Demand Side</div>
+    <h2 class="hl-display">
+      1위의 딜레마 — 시장의 대부분은<br>
+      아직 <span class="accent">가격 장벽</span> 밖에 있다.
+    </h2>
+    <div class="market-rows">
+      <div class="mr-head">
+        <div>Segment</div>
+        <div>컨디셔닝 가치</div>
+        <div>1,200만원 지불 의사</div>
+        <div>현 엔루틴 커버</div>
+        <div>실력 도약 잠재력</div>
+      </div>
+      <div class="mr-row covered">
+        <div class="seg">상위권 프로<span class="meta">KLPGA / LPGA 1부</span></div>
+        <div class="cell">매우 높음</div>
+        <div class="cell">기꺼이 지불</div>
+        <div class="cell"><span class="status-tag full">완벽 장악 · 10명</span></div>
+        <div class="cell">이미 정점 — 유지가 목표</div>
+      </div>
+      <div class="mr-row untapped">
+        <div class="seg">중위권 프로<span class="meta">KLPGA 2부 · 시드권</span></div>
+        <div class="cell">높음</div>
+        <div class="cell">부담스러움</div>
+        <div class="cell"><span class="status-tag gap">미충족</span></div>
+        <div class="cell">큼 — 1부 진입 가능</div>
+      </div>
+      <div class="mr-row untapped">
+        <div class="seg">하위권 프로<span class="meta">드림 투어 · 신인</span></div>
+        <div class="cell">잠재력 매우 큼</div>
+        <div class="cell">사실상 불가능</div>
+        <div class="cell"><span class="status-tag gap">미충족</span></div>
+        <div class="cell"><strong style="color:var(--ink)">매우 큼 — Quantum Leap</strong></div>
+      </div>
+      <div class="mr-row untapped">
+        <div class="seg">주니어 / 유소년<span class="meta">초·중·고 골프 선수</span></div>
+        <div class="cell">매우 높음 (성장기)</div>
+        <div class="cell">학부모 부담</div>
+        <div class="cell"><span class="status-tag gap">미충족</span></div>
+        <div class="cell"><strong style="color:var(--ink)">최대 — 커리어 결정 시기</strong></div>
+      </div>
+    </div>
+    <div class="market-bottom">
+      <div class="icon">!</div>
+      <p>가장 큰 실력 도약이 가능한 그룹이 <strong>가장 관리받지 못한다.</strong> 단순히 비어있는 게 아니라, <strong>가장 잠재력 있는 영역</strong>이 비어있다.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 7 — TWO BOTTLENECKS -->
+<!-- ============================================================ -->
+<section class="slide" id="slide-7">
+  <div class="slide-chrome">
+    <span class="wordmark">enrutin</span>
+    <span class="page-num">07 / 15</span>
+  </div>
+  <div class="content">
+    <div class="section-label">The Problem · Supply Side</div>
+    <h2 class="hl-display">
+      두 개의 한계가 동시에<br>
+      엔루틴의 <span class="accent">확장</span>을 막는다.
+    </h2>
+    <div class="bottleneck-grid">
+      <div class="bn-card">
+        <div class="label">Limit 01</div>
+        <h3>전문가 한 사람의 capacity</h3>
+        <div class="bn-viz">
+          <div class="human-viz">
+            <div class="one-side">
+              <div class="one-circle">1</div>
+              <div class="lbl">박사 1명</div>
+            </div>
+            <div class="arrow">
+              <div>1:1 풀케어</div>
+              <div class="line"></div>
+              <div style="font-family: var(--font-mono);">PHYSICAL CAP</div>
+            </div>
+            <div class="many-side">
+              <div class="dot-grid">
+                <div class="d filled"></div><div class="d filled"></div><div class="d filled"></div><div class="d filled"></div><div class="d filled"></div><div class="d filled"></div><div class="d filled"></div><div class="d filled"></div>
+                <div class="d filled"></div><div class="d filled"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div>
+                <div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div>
+              </div>
+              <div class="lbl">최대 10명</div>
+            </div>
+          </div>
+        </div>
+        <ul class="bn-points">
+          <li>박사 <strong>1인이 1:1로 관리할 수 있는 선수는 물리적으로 10명</strong>이 한계</li>
+          <li>5년간 항상 대기열, 자리는 <strong>해외 진출/은퇴 시에만</strong> 발생</li>
+          <li>수요는 검증됐는데 공급이 막힌 상태 — <strong>좋은 종류의 문제</strong></li>
+        </ul>
+      </div>
+      <div class="bn-card">
+        <div class="label">Limit 02</div>
+        <h3>측정 자체의 한계</h3>
+        <div class="bn-viz">
+          <div class="meas-viz">
+            <div class="meas-row">
+              <div class="meas-label">현재 방식</div>
+              <div class="meas-track">
+                <div class="dot" style="left: 8%;"></div>
+                <div class="dot" style="left: 26%;"></div>
+                <div class="dot" style="left: 51%;"></div>
+                <div class="dot" style="left: 78%;"></div>
+              </div>
+            </div>
+            <div class="meas-caption">모발·소변·혈액 — 침습적 · 간헐적</div>
+            <div class="meas-row" style="margin-top: 4px;">
+              <div class="meas-label">필요한 방식</div>
+              <div class="meas-track daily">
+                <div class="dot" style="left: 4%;"></div><div class="dot" style="left: 11%;"></div><div class="dot" style="left: 18%;"></div><div class="dot" style="left: 25%;"></div><div class="dot" style="left: 32%;"></div><div class="dot" style="left: 39%;"></div><div class="dot" style="left: 46%;"></div><div class="dot" style="left: 53%;"></div><div class="dot" style="left: 60%;"></div><div class="dot" style="left: 67%;"></div><div class="dot" style="left: 74%;"></div><div class="dot" style="left: 81%;"></div><div class="dot" style="left: 88%;"></div><div class="dot" style="left: 95%;"></div>
+              </div>
+            </div>
+            <div class="meas-caption">비침습 · 매일 측정 · 연속 추적</div>
+          </div>
+        </div>
+        <ul class="bn-points">
+          <li>모발·소변·혈액 검사는 <strong>정확하지만 침습적·간헐적</strong></li>
+          <li>스케줄 상 <strong>매일 측정 불가능</strong> → 컨디션 변화의 흐름 누락</li>
+          <li>일상 자가기록은 <strong>표준화·연속성 부족</strong>으로 해석 어려움</li>
+        </ul>
+      </div>
+    </div>
+    <div class="bottleneck-conclusion">
+      시장 대부분을 흡수하려면 <strong>전문가의 두뇌</strong>를 시스템으로 복제하고, <strong>매일 측정 가능한 도구</strong>를 함께 갖춰야 한다.
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 8 — WHAT IS CONDITIONING -->
+<!-- ============================================================ -->
+<section class="slide" id="slide-8">
+  <div class="slide-chrome">
+    <span class="wordmark">enrutin</span>
+    <span class="page-num">08 / 15</span>
+  </div>
+  <div class="content">
+    <div class="section-label">Defining the Problem Space</div>
+    <h2 class="hl-display">
+      컨디셔닝은 단일 지표가 아니다.<br>
+      <span class="accent">6개 변수의 결합</span>을 읽는 일이다.
+    </h2>
+    <p class="hl-sub">단일 데이터로 컨디션을 진단할 수 없다. 변수 간 상호작용까지 읽어야 부상을 막고 출전을 결정할 수 있다 — 이 영역에 5년 현장 데이터와 도메인 노하우가 함께 쌓인 곳은 엔루틴 뿐이다.</p>
+    <div class="cond-body">
+      <div class="hex-stage">
+        <svg class="hex-svg" viewBox="0 0 480 380" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <g stroke="#dee1e6" stroke-width="1" opacity="0.7">
+            <line x1="240" y1="50" x2="361" y2="120"/>
+            <line x1="240" y1="50" x2="361" y2="260"/>
+            <line x1="240" y1="50" x2="240" y2="330"/>
+            <line x1="240" y1="50" x2="119" y2="260"/>
+            <line x1="240" y1="50" x2="119" y2="120"/>
+            <line x1="361" y1="120" x2="361" y2="260"/>
+            <line x1="361" y1="120" x2="240" y2="330"/>
+            <line x1="361" y1="120" x2="119" y2="260"/>
+            <line x1="361" y1="120" x2="119" y2="120"/>
+            <line x1="361" y1="260" x2="240" y2="330"/>
+            <line x1="361" y1="260" x2="119" y2="260"/>
+            <line x1="361" y1="260" x2="119" y2="120"/>
+            <line x1="240" y1="330" x2="119" y2="260"/>
+            <line x1="240" y1="330" x2="119" y2="120"/>
+            <line x1="119" y1="260" x2="119" y2="120"/>
+          </g>
+          <circle cx="240" cy="190" r="50" fill="#0a0b0d" />
+          <text x="240" y="186" text-anchor="middle" fill="#c8ff5e" font-family="Pretendard Variable, system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="1.4">CONDITION</text>
+          <text x="240" y="202" text-anchor="middle" fill="#ffffff" font-family="Pretendard Variable, system-ui, sans-serif" font-size="13" font-weight="500">컨디셔닝</text>
+          <circle cx="240" cy="50" r="28" fill="#ffffff" stroke="#0a0b0d" stroke-width="1.5"/>
+          <text x="240" y="55" text-anchor="middle" fill="#0a0b0d" font-family="Pretendard Variable, system-ui, sans-serif" font-size="13" font-weight="600">훈련량</text>
+          <circle cx="361" cy="120" r="28" fill="#ffffff" stroke="#0a0b0d" stroke-width="1.5"/>
+          <text x="361" y="125" text-anchor="middle" fill="#0a0b0d" font-family="Pretendard Variable, system-ui, sans-serif" font-size="13" font-weight="600">휴식</text>
+          <circle cx="361" cy="260" r="28" fill="#ffffff" stroke="#0a0b0d" stroke-width="1.5"/>
+          <text x="361" y="265" text-anchor="middle" fill="#0a0b0d" font-family="Pretendard Variable, system-ui, sans-serif" font-size="13" font-weight="600">수면</text>
+          <circle cx="240" cy="330" r="28" fill="#ffffff" stroke="#0a0b0d" stroke-width="1.5"/>
+          <text x="240" y="335" text-anchor="middle" fill="#0a0b0d" font-family="Pretendard Variable, system-ui, sans-serif" font-size="13" font-weight="600">식단</text>
+          <circle cx="119" cy="260" r="28" fill="#ffffff" stroke="#0a0b0d" stroke-width="1.5"/>
+          <text x="119" y="265" text-anchor="middle" fill="#0a0b0d" font-family="Pretendard Variable, system-ui, sans-serif" font-size="13" font-weight="600">멘탈</text>
+          <circle cx="119" cy="120" r="28" fill="#ffffff" stroke="#0a0b0d" stroke-width="1.5"/>
+          <text x="119" y="125" text-anchor="middle" fill="#0a0b0d" font-family="Pretendard Variable, system-ui, sans-serif" font-size="13" font-weight="600">수분</text>
+        </svg>
+      </div>
+      <div class="case-card">
+        <div class="case-label">Real Case · 익명 처리</div>
+        <h4>3개 변수가 겹치면, 단일 검사로는 보이지 않는 위험이 나타난다.</h4>
+        <div class="case-inputs">
+          <div class="inp"><span class="name">코르티솔</span><span class="val alert">↑ baseline +15%</span></div>
+          <div class="inp"><span class="name">마그네슘</span><span class="val alert">↓ 부족</span></div>
+          <div class="inp"><span class="name">생리주기</span><span class="val alert">D-2</span></div>
+          <div class="inp"><span class="name">전날 훈련량</span><span class="val">풀라운드 + 웨이트</span></div>
+        </div>
+        <div class="case-arrow">박사 판단</div>
+        <div class="case-output">
+          출전 가능. 1라운드 보수적 운영. <strong>마그네슘 보충 + 카페인 제한 + 회복 우선.</strong>
+        </div>
+        <div class="case-footer">단일 지표(코르티솔만)로는 다소 높은 정도. 세 변수를 함께 읽어야 근육 경련 위험 예측 가능. <strong style="color:var(--accent-lime)">결과: 컷 통과 + 부상 없음.</strong></div>
+      </div>
+    </div>
+    <div class="moat-banner">
+      <div class="moat-eyebrow">Why us</div>
+      <p>이 영역은 단순 앱이나 일반 AI로 풀 수 있는 문제가 아니다. <strong>5년 현장 데이터 + 도메인 노하우</strong>가 결합돼야 하고, 그래서 <strong>엔루틴만 풀 수 있다.</strong></p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 9 — 3-PILLAR (DARK) -->
+<!-- ============================================================ -->
+<section class="slide dark" id="slide-9">
+  <div class="slide-chrome">
+    <span class="wordmark">enrutin</span>
+    <span class="page-num">09 / 15</span>
+  </div>
+  <div class="content">
+    <div class="section-label">The Solution</div>
+    <h2 class="hl-display">
+      3축 자산으로 시장 대부분을 흡수한다.<br>
+      <span class="accent">Phase 0는 끝났다.</span> 이번 라운드는 Phase 1.
+    </h2>
+    <p class="hl-sub">Platform · Knowledge Engine · Voice Biomarker — 세 축이 함께 자라며 한계 두 개를 동시에 푼다. 이번 라운드는 ①과 ②에 집중. ③은 데이터 수집 시작, 본격 R&amp;D는 TIPS로 분리.</p>
+    <div class="pillar-grid">
+      <div class="pillar focus">
+        <div class="focus-banner">This Round</div>
+        <div class="pillar-no">PILLAR 01</div>
+        <h3>Platform</h3>
+        <div class="role">앱·대시보드 — 데이터 통합 자동화의 그릇</div>
+        <div class="pillar-stages">
+          <div class="stage done"><span class="marker">DONE</span><span>5년 현장 운영으로 데이터 흐름 검증</span></div>
+          <div class="stage now"><span class="marker">NOW</span><span><strong>Phase 1</strong> · 선수 앱 + 박사 대시보드 본격 구축</span></div>
+          <div class="stage next"><span class="marker">NEXT</span><span>B2B 대시보드 · 코호트 모니터링 확장</span></div>
+        </div>
+        <div class="pillar-tag">사용자가 매일 데이터를 남기고, 박사가 매일 그 흐름을 본다.</div>
+      </div>
+      <div class="pillar focus">
+        <div class="focus-banner">This Round</div>
+        <div class="pillar-no">PILLAR 02</div>
+        <h3>Knowledge Engine</h3>
+        <div class="role">박사 5년 노하우의 시스템화 — 측정 / 플랜 / 피드백</div>
+        <div class="pillar-stages">
+          <div class="stage done"><span class="marker">DONE</span><span><strong>Phase 0</strong> 완료 · 의사결정 로직 v1 구조화</span></div>
+          <div class="stage now"><span class="marker">NOW</span><span><strong>Phase 1</strong> · 룰베이스 엔진 + 인증 관리자 운영</span></div>
+          <div class="stage next"><span class="marker">NEXT</span><span>RAG 기반 LLM 보조 · 케이스 자동 검색</span></div>
+        </div>
+        <div class="pillar-tag">박사 시간을 high-value 의사결정에만 집중. capacity가 N배로 확장된다.</div>
+      </div>
+      <div class="pillar future">
+        <div class="pillar-no" style="color: var(--accent-amber);">PILLAR 03</div>
+        <h3>Voice Biomarker</h3>
+        <div class="role">비침습 · 매일 · 연속 측정 — 측정 한계의 종결</div>
+        <div class="pillar-stages">
+          <div class="stage done"><span class="marker">DONE</span><span>선행 논문 검토 · 이론 검증 완료</span></div>
+          <div class="stage now"><span class="marker">NOW</span><span><strong>이번 라운드</strong> · 선수 풀에서 데이터 수집 시작</span></div>
+          <div class="stage next"><span class="marker">NEXT</span><span><strong>TIPS 본격 R&amp;D</strong> → Series A 상용화</span></div>
+        </div>
+        <div class="pillar-tag">R&amp;D는 정부 매칭 자금(TIPS)으로 분리. VC 자금은 즉시 매출 영역에 집중.</div>
+      </div>
+    </div>
+    <div class="pillar-footer">
+      <div class="lbl">Funding Strategy</div>
+      <div class="msg">Seed (이번 라운드) → <strong>Platform + Knowledge Engine</strong> 구축. R&amp;D는 <strong>TIPS 매칭 (VC 2억 + 정부 8억)</strong>으로 분리. 자본 효율 4배.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 10 — 3-TIER PRODUCT -->
+<!-- ============================================================ -->
+<section class="slide" id="slide-10">
+  <div class="slide-chrome">
+    <span class="wordmark">enrutin</span>
+    <span class="page-num">10 / 15</span>
+  </div>
+  <div class="content">
+    <div class="section-label">Product · 3-Tier Lineup</div>
+    <h2 class="hl-display">
+      하나의 코어 엔진,<br>
+      <span class="accent">세 가지 가격</span>으로 시장을 흡수한다.
+    </h2>
+    <p class="hl-sub">Premium은 cap 10명을 유지해 희소성과 브랜드를 보호한다. Light는 박사 시간과 무관하게 무한 확장 가능하다. 같은 엔진, 다른 박사 개입 강도.</p>
+    <div class="tier-grid">
+      <div class="tier-card premium">
+        <div class="tier-flag">정점 · cap 10명</div>
+        <div class="tier-header">
+          <div class="tier-name">Premium · 팀 엔루틴</div>
+          <div class="tier-price">
+            <span class="num">1,200</span>
+            <span class="currency">만원</span>
+            <span class="period">/시즌</span>
+          </div>
+          <div class="tier-target"><strong>KLPGA 1부투어</strong> 최정상급 선수</div>
+        </div>
+        <div class="tier-rows">
+          <div class="tier-row">
+            <div class="row-label">관리 방식</div>
+            <div class="row-val">주1회 1:1 풀케어 · 매주 시합 루틴 설정</div>
+          </div>
+          <div class="tier-row">
+            <div class="row-label">데이터 측정</div>
+            <div class="row-val"><span class="mono">모발 ×2 · 소변 ×30 · 심박 · 수면</span></div>
+          </div>
+          <div class="tier-row">
+            <div class="row-label">현장 케어</div>
+            <div class="row-val">매주 시합 동행</div>
+          </div>
+          <div class="tier-row">
+            <div class="row-label">응답 속도</div>
+            <div class="row-val"><span class="mono">≤ 4시간</span> 즉시 응답</div>
+          </div>
+          <div class="tier-row">
+            <div class="row-label">박사 / 시스템</div>
+            <div class="ratio-bar">
+              <div class="doc" style="width: 80%;"></div>
+              <div class="sys" style="width: 20%;"></div>
+            </div>
+            <div class="ratio-legend"><span>박사 80</span><span>시스템 20</span></div>
+          </div>
+        </div>
+        <div class="tier-footer">희소성 = 브랜드. 정점 자리는 늘리지 않는다.</div>
+      </div>
+      <div class="tier-card">
+        <div class="tier-header">
+          <div class="tier-name">Standard</div>
+          <div class="tier-price">
+            <span class="num">400</span>
+            <span class="currency">만원</span>
+            <span class="period">/시즌</span>
+          </div>
+          <div class="tier-target"><strong>프로 선수</strong> · 중·상위권 진입</div>
+        </div>
+        <div class="tier-rows">
+          <div class="tier-row">
+            <div class="row-label">관리 방식</div>
+            <div class="row-val">월 1회 1:1 케어 · 핵심 지표 관리</div>
+          </div>
+          <div class="tier-row">
+            <div class="row-label">데이터 측정</div>
+            <div class="row-val"><span class="mono">소변 ×12 · 비정기 심박 · 수면</span></div>
+          </div>
+          <div class="tier-row">
+            <div class="row-label">현장 케어</div>
+            <div class="row-val">핵심 대회만 동행</div>
+          </div>
+          <div class="tier-row">
+            <div class="row-label">응답 속도</div>
+            <div class="row-val"><span class="mono">≤ 24시간</span></div>
+          </div>
+          <div class="tier-row">
+            <div class="row-label">박사 / 시스템</div>
+            <div class="ratio-bar">
+              <div class="doc" style="width: 30%;"></div>
+              <div class="sys" style="width: 70%;"></div>
+            </div>
+            <div class="ratio-legend"><span>박사 30</span><span>시스템 70</span></div>
+          </div>
+        </div>
+        <div class="tier-footer">시스템이 일상을 운영, 박사는 핵심 의사결정에만 개입.</div>
+      </div>
+      <div class="tier-card light">
+        <div class="tier-flag scale">확장 핵심 · 무한대</div>
+        <div class="tier-header">
+          <div class="tier-name">Light</div>
+          <div class="tier-price">
+            <span class="num">120</span>
+            <span class="currency">만원</span>
+            <span class="period">/시즌</span>
+          </div>
+          <div class="tier-target"><strong>유소년 / 아마추어</strong> 선수</div>
+        </div>
+        <div class="tier-rows">
+          <div class="tier-row">
+            <div class="row-label">관리 방식</div>
+            <div class="row-val">월 1회 데이터 리포트 · 분기 유선 상담</div>
+          </div>
+          <div class="tier-row">
+            <div class="row-label">데이터 측정</div>
+            <div class="row-val"><span class="mono">자가 체크리스트</span> (체중·수면·컨디션)</div>
+          </div>
+          <div class="tier-row">
+            <div class="row-label">현장 케어</div>
+            <div class="row-val">없음 (원격 케어)</div>
+          </div>
+          <div class="tier-row">
+            <div class="row-label">응답 속도</div>
+            <div class="row-val">시스템 즉시 + 관리자 주간</div>
+          </div>
+          <div class="tier-row">
+            <div class="row-label">운영 구조</div>
+            <div class="row-val"><strong>인증 관리자 + 시스템</strong> (박사 감독)</div>
+          </div>
+        </div>
+        <div class="tier-footer">박사 인증·교육 받은 컨디셔닝 관리자가 운영.</div>
+      </div>
+    </div>
+    <div class="product-bottom">
+      <div class="pb">
+        <div class="num">01</div>
+        <div class="txt">정점 <strong>Premium 10명</strong>은 유지 — 희소성·funnel 정점</div>
+      </div>
+      <div class="pb">
+        <div class="num">02</div>
+        <div class="txt"><strong>같은 코어 엔진</strong>, 다른 박사 개입 강도</div>
+      </div>
+      <div class="pb">
+        <div class="num">03</div>
+        <div class="txt"><strong>인증 관리자</strong> 시스템이 Light tier를 무한 확장</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 11 — FUNNEL -->
+<!-- ============================================================ -->
+<section class="slide" id="slide-11">
+  <div class="slide-chrome">
+    <span class="wordmark">enrutin</span>
+    <span class="page-num">11 / 15</span>
+  </div>
+  <div class="content">
+    <div class="section-label">Growth Engine · Funnel</div>
+    <h2 class="hl-display">
+      한 funnel이 시장 전체를 흡수한다.<br>
+      <span class="accent">정점은 늘 차 있고, 아래에서 채워진다.</span>
+    </h2>
+    <p class="hl-sub">B2B와 B2C의 두 입구로 들어온 선수가 Light → Standard → Premium으로 자라난다. 골프 선수 커리어가 10년+이라는 점이 이 funnel을 평생 LTV 자산으로 만든다.</p>
+    <div class="funnel-body">
+      <div class="funnel-stage">
+        <svg class="funnel-svg" viewBox="0 0 480 460" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <g>
+            <rect x="30" y="20" width="170" height="48" rx="10" fill="#0052ff"/>
+            <text x="115" y="42" text-anchor="middle" fill="#ffffff" font-family="Pretendard Variable, system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="1.5">B2B INLET</text>
+            <text x="115" y="58" text-anchor="middle" fill="#ffffff" font-family="Pretendard Variable, system-ui, sans-serif" font-size="12" font-weight="500">팀 / 아카데미 단체 도입</text>
+          </g>
+          <g>
+            <rect x="280" y="20" width="170" height="48" rx="10" fill="#0a0b0d"/>
+            <text x="365" y="42" text-anchor="middle" fill="#c8ff5e" font-family="Pretendard Variable, system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="1.5">B2C INLET</text>
+            <text x="365" y="58" text-anchor="middle" fill="#ffffff" font-family="Pretendard Variable, system-ui, sans-serif" font-size="12" font-weight="500">개인 가입 (주니어 / 하위권)</text>
+          </g>
+          <path d="M 115 68 L 115 105 Q 115 115, 125 115 L 240 115" stroke="#dee1e6" stroke-width="1.5" fill="none"/>
+          <path d="M 365 68 L 365 105 Q 365 115, 355 115 L 240 115" stroke="#dee1e6" stroke-width="1.5" fill="none"/>
+          <circle cx="240" cy="115" r="3" fill="#0a0b0d"/>
+          <g>
+            <rect x="80" y="125" width="320" height="62" rx="10" fill="#ffffff" stroke="#0a0b0d" stroke-width="1.5"/>
+            <text x="100" y="148" fill="#7c828a" font-family="Pretendard Variable, system-ui, sans-serif" font-size="10" font-weight="700" letter-spacing="1.5">LIGHT</text>
+            <text x="100" y="170" fill="#0a0b0d" font-family="Pretendard Variable, system-ui, sans-serif" font-size="16" font-weight="600">유소년 / 아마추어</text>
+            <text x="380" y="160" text-anchor="end" fill="#0a0b0d" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600">120만원/시즌</text>
+            <text x="380" y="178" text-anchor="end" fill="#7c828a" font-family="Pretendard Variable, system-ui, sans-serif" font-size="11">실력 향상 + 데이터 축적</text>
+          </g>
+          <line x1="240" y1="187" x2="240" y2="215" stroke="#dee1e6" stroke-width="1.5"/>
+          <polygon points="240,210 235,220 245,220" fill="#0a0b0d"/>
+          <g>
+            <rect x="80" y="225" width="320" height="62" rx="10" fill="#ffffff" stroke="#0a0b0d" stroke-width="1.5"/>
+            <text x="100" y="248" fill="#7c828a" font-family="Pretendard Variable, system-ui, sans-serif" font-size="10" font-weight="700" letter-spacing="1.5">STANDARD</text>
+            <text x="100" y="270" fill="#0a0b0d" font-family="Pretendard Variable, system-ui, sans-serif" font-size="16" font-weight="600">중·상위권 프로</text>
+            <text x="380" y="260" text-anchor="end" fill="#0a0b0d" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600">400만원/시즌</text>
+            <text x="380" y="278" text-anchor="end" fill="#7c828a" font-family="Pretendard Variable, system-ui, sans-serif" font-size="11">상위권 도약</text>
+          </g>
+          <line x1="240" y1="287" x2="240" y2="315" stroke="#dee1e6" stroke-width="1.5"/>
+          <polygon points="240,310 235,320 245,320" fill="#0a0b0d"/>
+          <g>
+            <rect x="80" y="325" width="320" height="72" rx="10" fill="#0a0b0d"/>
+            <text x="100" y="350" fill="#c8ff5e" font-family="Pretendard Variable, system-ui, sans-serif" font-size="10" font-weight="700" letter-spacing="1.5">★ PREMIUM · 팀 엔루틴</text>
+            <text x="100" y="374" fill="#ffffff" font-family="Pretendard Variable, system-ui, sans-serif" font-size="17" font-weight="600">최정상급 KLPGA / LPGA</text>
+            <text x="380" y="362" text-anchor="end" fill="#c8ff5e" font-family="JetBrains Mono, monospace" font-size="15" font-weight="600">1,200만원/시즌</text>
+            <text x="380" y="382" text-anchor="end" fill="#a8acb3" font-family="Pretendard Variable, system-ui, sans-serif" font-size="11">cap 10명 · 늘 만석</text>
+          </g>
+          <g>
+            <line x1="240" y1="397" x2="240" y2="420" stroke="#c8ff5e" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <rect x="135" y="420" width="210" height="28" rx="14" fill="#c8ff5e"/>
+            <text x="240" y="439" text-anchor="middle" fill="#0a0b0d" font-family="Pretendard Variable, system-ui, sans-serif" font-size="12" font-weight="700">↑ 상시 대기열 (자체 supply)</text>
+          </g>
+        </svg>
+      </div>
+      <div class="funnel-side">
+        <div class="ltv-card">
+          <div class="lbl">LTV per Athlete</div>
+          <div class="ltv-grid">
+            <div class="ltv-cell">
+              <div class="num">120<span class="unit">만</span></div>
+              <div class="desc">진입 시점 (Light, 유소년)</div>
+            </div>
+            <div class="ltv-cell">
+              <div class="num">400<span class="unit">만</span></div>
+              <div class="desc">중간 단계 (Standard, 프로)</div>
+            </div>
+            <div class="ltv-cell">
+              <div class="num">1,200<span class="unit">만</span></div>
+              <div class="desc">정점 (Premium, 시즌당)</div>
+            </div>
+          </div>
+        </div>
+        <div class="insight-stack">
+          <div class="insight-row">
+            <div class="num-tag">01</div>
+            <div class="txt">한 선수의 누적 LTV는 <strong class="accent">다년간 수천만원</strong>. 골프 선수 커리어 평균 <strong>10년+</strong> → 평생 LTV가 funnel에 묶인다.</div>
+          </div>
+          <div class="insight-row">
+            <div class="num-tag">02</div>
+            <div class="txt">Premium 정점은 단순 매출원이 아니라 <strong class="accent">funnel의 마케팅 자산</strong>이다. "팀 엔루틴 출신"이 하위 tier 영업 비용을 줄인다.</div>
+          </div>
+          <div class="insight-row">
+            <div class="num-tag">03</div>
+            <div class="txt">정점 자리가 비면 <strong class="accent">funnel 내부에서 채워진다</strong>. 외부 영업 없이 supply가 자체 발생.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 12 — GTM -->
+<!-- ============================================================ -->
+<section class="slide" id="slide-12">
+  <div class="slide-chrome">
+    <span class="wordmark">enrutin</span>
+    <span class="page-num">12 / 15</span>
+  </div>
+  <div class="content">
+    <div class="section-label">Go-to-Market</div>
+    <h2 class="hl-display">
+      세 채널이 동시에 작동한다.<br>
+      <span class="accent">B2C는 즉시</span>, <span class="accent">B2B는 가속</span>, B2G는 장기.
+    </h2>
+    <p class="hl-sub">박사 5년 네트워크와 1위 브랜드가 영업 비용을 낮춘다. B2B는 데이터 수집 속도까지 끌어올리는 부가가치를 가진다. B2G는 인증 자격 프로그램으로 미래 카테고리를 잡는다.</p>
+    <div class="gtm-grid">
+      <div class="channel-card">
+        <div class="ch-head">
+          <div class="ch-name">B2C</div>
+          <div class="ch-status">즉시 진입</div>
+        </div>
+        <div class="ch-section">
+          <div class="lbl">핵심 자산</div>
+          <ul>
+            <li><strong>박사 5년 네트워크</strong> (선수·코치·학부모)</li>
+            <li><strong>593명 자체 설문 응답자 풀</strong></li>
+            <li>1위 브랜드 인지도 — CAC 최소화</li>
+          </ul>
+        </div>
+        <div class="ch-section">
+          <div class="lbl">진입 전략</div>
+          <ul>
+            <li>유소년·하위권 프로 대상 <strong>Light tier</strong> 우선</li>
+            <li>중위권 프로 대상 <strong>Standard tier</strong> 정식</li>
+          </ul>
+        </div>
+        <div class="ch-foot">
+          박사가 5년간 만들어둔 신뢰 네트워크가 <strong>영업 비용을 최소화한다.</strong>
+        </div>
+      </div>
+      <div class="channel-card featured">
+        <div class="channel-tag">확장 가속</div>
+        <div class="ch-head">
+          <div class="ch-name">B2B</div>
+          <div class="ch-status">진행 중</div>
+        </div>
+        <div class="ch-section">
+          <div class="lbl">현재 상태</div>
+          <ul>
+            <li><strong>5개 골프 아카데미 적용 중</strong> <span class="pill">2025–</span></li>
+            <li>KPGA 주니어 데이터 과학화 사업 운영</li>
+          </ul>
+        </div>
+        <div class="ch-section">
+          <div class="lbl">부가가치 — 단순 매출이 아니다</div>
+          <ul>
+            <li>단체 도입 → <strong>데이터 수집 속도 N배</strong></li>
+            <li>그 안의 선수가 개인 Standard/Premium 업그레이드</li>
+            <li>= <strong>Premium 후보 자체 발굴 채널</strong></li>
+          </ul>
+        </div>
+        <div class="ch-traction">
+          <span class="num">5</span>
+          <span class="lbl">개 아카데미 — 27년 50개 목표</span>
+        </div>
+      </div>
+      <div class="channel-card future">
+        <div class="channel-tag">미래 옵션</div>
+        <div class="ch-head">
+          <div class="ch-name">B2G</div>
+          <div class="ch-status">장기 / 28년+</div>
+        </div>
+        <div class="ch-section">
+          <div class="lbl">사업 형태</div>
+          <ul>
+            <li><strong>인증 컨디셔닝 관리자</strong> 자격 프로그램</li>
+            <li>지자체·협회 단위 유소년 컨디셔닝 표준화</li>
+            <li>국가대표 선수촌 자문 (트랙레코드)</li>
+          </ul>
+        </div>
+        <div class="ch-section">
+          <div class="lbl">전략적 가치</div>
+          <ul>
+            <li>'엔루틴 인증'이 <strong>업계 표준</strong>으로 lock-in</li>
+            <li>Light tier 운영 인력의 <strong>지속적 공급원</strong></li>
+          </ul>
+        </div>
+        <div class="ch-foot">
+          별도 R&amp;D 자원 없이 <strong>Phase 1 운영 결과 위에 자연스럽게 얹는다.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 13 — FUNDING ROADMAP (DARK) -->
+<!-- ============================================================ -->
+<section class="slide dark" id="slide-13">
+  <div class="slide-chrome">
+    <span class="wordmark">enrutin</span>
+    <span class="page-num">13 / 15</span>
+  </div>
+  <div class="content">
+    <div class="section-label">Funding Strategy</div>
+    <h2 class="hl-display">
+      Seed로 Phase 1까지. R&amp;D는 <span class="accent">TIPS</span>로 분리.<br>
+      <span class="accent">자본 효율을 4배로 끌어올린다.</span>
+    </h2>
+    <p class="hl-sub">VC 자금은 즉시 매출에 연결되는 영역(Platform · Knowledge Engine)에 집중한다. High-risk R&amp;D(Voice Biomarker)는 정부 매칭 자금(TIPS) 8억원으로 분리해 같은 VC 자본으로 4배 큰 일을 한다.</p>
+    <div class="roadmap-grid">
+      <div class="stage-card now">
+        <div class="stage-period">2026 H1 — H2</div>
+        <div class="stage-name">Seed Round</div>
+        <div class="stage-cap">
+          <div class="cap-lbl">This Round</div>
+          <div class="cap-amount">시드 라운드</div>
+          <div class="cap-meta">VC 자금 — 즉시 매출 영역에 100% 투입</div>
+        </div>
+        <ul class="stage-list">
+          <li><strong>Platform</strong> 본격 구축 (앱·대시보드)</li>
+          <li><strong>Knowledge Engine v1</strong> 시스템화</li>
+          <li><strong>Light/Standard tier</strong> 정식 출시</li>
+          <li>B2B 첫 5–10개 팀 계약</li>
+          <li>Voice Biomarker — <strong>데이터 수집만</strong></li>
+        </ul>
+        <div class="stage-prove">
+          <div class="lbl">Proof Goal</div>
+          <div class="txt">Phase 1 시스템이 박사 1:1과 동등한 효과 입증 + B2B 모델 검증</div>
+        </div>
+      </div>
+      <div class="stage-card">
+        <div class="stage-period">2026 H2 — 2027</div>
+        <div class="stage-name">TIPS Program</div>
+        <div class="stage-cap">
+          <div class="cap-lbl">Government Match</div>
+          <div class="cap-amount">VC 2억<span class="small"> + </span>정부 8억<br><span class="small">총 10억 / R&amp;D 전용</span></div>
+          <div class="cap-meta">정부 매칭 4배 — 자본 효율 극대화</div>
+        </div>
+        <ul class="stage-list">
+          <li><strong>Voice Biomarker 본격 R&amp;D</strong></li>
+          <li>임상 검증 + 모델 개발</li>
+          <li>골프 도메인 특화 baseline 구축</li>
+          <li>Knowledge Engine LLM 보조 통합</li>
+          <li>메인 사업과 R&amp;D 자금 분리 운영</li>
+        </ul>
+        <div class="stage-prove">
+          <div class="lbl">Proof Goal</div>
+          <div class="txt">Voice signal과 컨디션 지표 매칭 검증 + 모델 v1 완성</div>
+        </div>
+      </div>
+      <div class="stage-card">
+        <div class="stage-period">2027 H2 — 2028</div>
+        <div class="stage-name">Series A</div>
+        <div class="stage-cap">
+          <div class="cap-lbl">Scale-Up</div>
+          <div class="cap-amount">시리즈 A</div>
+          <div class="cap-meta">검증된 시스템 위에 글로벌 확장</div>
+        </div>
+        <ul class="stage-list">
+          <li><strong>Voice Biomarker 상용화</strong></li>
+          <li>B2C 헬스케어 시장 확장</li>
+          <li>B2G 본격 진입 (인증 자격)</li>
+          <li>일본·미국 골프 시장 진출 검토</li>
+          <li>Series B / IPO 트랙 진입</li>
+        </ul>
+        <div class="stage-prove">
+          <div class="lbl">Proof Goal</div>
+          <div class="txt">Voice 상용화 + 헬스케어 확장 + 글로벌 진출 cushion</div>
+        </div>
+      </div>
+    </div>
+    <div class="efficiency-banner">
+      <div class="big-num">4×</div>
+      <div class="desc">
+        <strong>VC 2억 + 정부 8억 = 10억의 일을 한다.</strong><br>
+        High-risk R&amp;D를 정부 자금으로 분리, VC 자본은 즉시 매출 연결 영역에 집중.
+      </div>
+      <div class="plan-b">
+        <strong>Plan B —</strong> TIPS 미선정 시에도 메인 사업(Platform · Knowledge) 영향 없음.
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 14 — FINANCIALS -->
+<!-- ============================================================ -->
+<section class="slide" id="slide-14">
+  <div class="slide-chrome">
+    <span class="wordmark">enrutin</span>
+    <span class="page-num">14 / 15</span>
+  </div>
+  <div class="content">
+    <div class="section-label">Financials &amp; Milestones</div>
+    <h2 class="hl-display">
+      <span class="accent">Premium 1.2억은 base.</span><br>
+      Standard·Light·B2B가 성장축. Voice 매출은 0으로 가정.
+    </h2>
+    <p class="hl-sub">현재 매출은 5년 검증된 Premium에서 발생. 시스템화 후 Standard·Light·B2B가 성장축. Voice 상용화 매출은 2028까지 0으로 깔아둔다 (upside 별도).</p>
+    <div class="fin-body">
+      <div class="fin-table">
+        <div class="fin-thead">
+          <div>구분</div>
+          <div class="right">2026 (E)</div>
+          <div class="right">2027 (E)</div>
+          <div class="right">2028 (E)</div>
+        </div>
+        <div class="fin-row section-row">Base — 검증된 매출</div>
+        <div class="fin-row">
+          <div class="label">Premium · 팀 엔루틴<span class="meta">1,200만원 × 10명</span></div>
+          <div class="val">120</div>
+          <div class="val">120</div>
+          <div class="val">120</div>
+        </div>
+        <div class="fin-row section-row">Growth — 시스템화 매출</div>
+        <div class="fin-row">
+          <div class="label">Standard · 400만원<span class="meta">중·상위권 프로</span></div>
+          <div class="val">200</div>
+          <div class="val">600</div>
+          <div class="val">1,200</div>
+        </div>
+        <div class="fin-row">
+          <div class="label">Light · 120만원<span class="meta">유소년 / 아마추어</span></div>
+          <div class="val">240</div>
+          <div class="val">720</div>
+          <div class="val">1,800</div>
+        </div>
+        <div class="fin-row">
+          <div class="label">B2B 라이선스<span class="meta">팀 / 아카데미</span></div>
+          <div class="val">100</div>
+          <div class="val">450</div>
+          <div class="val">1,440</div>
+        </div>
+        <div class="fin-row section-row">Future — Upside (보수적 0)</div>
+        <div class="fin-row future">
+          <div class="label">Voice Biomarker<span class="meta">Series A 이후 상용화</span></div>
+          <div class="val">0</div>
+          <div class="val">0</div>
+          <div class="val">0</div>
+        </div>
+        <div class="fin-row total">
+          <div class="label">총매출</div>
+          <div class="val">660</div>
+          <div class="val">1,890</div>
+          <div class="val">4,560</div>
+        </div>
+        <div class="fin-foot">
+          단위: 백만원 · 성장률 26→27 <strong style="color:var(--ink); font-family:var(--font-mono);">+186%</strong> · 27→28 <strong style="color:var(--ink); font-family:var(--font-mono);">+141%</strong>
+        </div>
+      </div>
+      <div class="ms-side">
+        <div class="ms-card">
+          <div class="ms-head">
+            <h4>12–18개월 마일스톤</h4>
+            <div class="h-meta">2026 — 2027 H1</div>
+          </div>
+          <div class="milestones">
+            <div class="ms-item">
+              <div class="qtr">Q1·Q2</div>
+              <div class="desc"><strong>Knowledge Engine v1 구축</strong> + Light tier 베타 (n=50)</div>
+            </div>
+            <div class="ms-item">
+              <div class="qtr">Q3·Q4</div>
+              <div class="desc">Standard tier 정식 + <strong>B2B 첫 5개 계약</strong></div>
+            </div>
+            <div class="ms-item">
+              <div class="qtr">Q5·Q6</div>
+              <div class="desc">B2C 누적 500명 + <strong>TIPS 신청</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="lbl">Core KPIs (이번 라운드 증명)</div>
+          <div class="kpi-list">
+            <div class="ki"><span class="name">Light → Standard 전환율</span><span class="val">≥ 15%</span></div>
+            <div class="ki"><span class="name">B2B 재계약률</span><span class="val">≥ 80%</span></div>
+            <div class="ki"><span class="name">시스템 정확도 (vs 박사)</span><span class="val">≥ 90%</span></div>
+            <div class="ki"><span class="name">Voice 데이터 누적 샘플</span><span class="val">≥ 5,000</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 15 — TEAM & ASK (DARK CLOSING) -->
+<!-- ============================================================ -->
+<section class="slide dark" id="slide-15">
+  <div class="slide-chrome">
+    <span class="wordmark">enrutin</span>
+    <span class="page-num">15 / 15</span>
+  </div>
+  <div class="content">
+    <div class="section-label">Team &amp; The Ask</div>
+    <h2 class="hl-display">
+      현장과 시스템, <span class="accent">두 축이 함께 있다.</span><br>
+      이제 자본을 더해 시장을 가져온다.
+    </h2>
+    <div class="closing-body">
+      <div class="team-block">
+        <div class="team-head">— Team</div>
+        <div class="person-card">
+          <div class="person-avatar">KH</div>
+          <div class="person-info">
+            <div class="role-tag">Founder · CEO</div>
+            <h4>김희재 박사</h4>
+            <div class="credentials">
+              운동생리학 Ph.D. · <strong>광운대 겸임교수</strong><br>
+              SCI 20여편 · 5년간 골프 컨디셔닝 1위 운영<br>
+              KLPGA·LPGA 최정상 관리 · 진천선수촌 자문
+            </div>
+          </div>
+        </div>
+        <div class="person-card">
+          <div class="person-avatar">CT</div>
+          <div class="person-info">
+            <div class="role-tag">CTO · Product</div>
+            <h4>유성호</h4>
+            <div class="credentials">
+              KAIST 원자력·양자공학 석사 · 화학 학사<br>
+              SCI 5편 · <strong>풀타임 commit</strong><br>
+              Phase 0 노하우 구조화 + Phase 1 시스템 리드
+            </div>
+          </div>
+        </div>
+        <div class="person-card advisor">
+          <div class="person-avatar">+</div>
+          <div class="person-info">
+            <div class="role-tag">Advisor — 영입 예정</div>
+            <h4>임상·의학 검증 자문</h4>
+            <div class="credentials">
+              Voice Biomarker R&amp;D 단계에서 합류<br>
+              스포츠 의학·SaMD 인허가 경험 보유 자문진
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ask-block">
+        <div class="ask-head">
+          <div class="ask-cell">
+            <div class="lbl">Round Size</div>
+            <div class="val">[TBD]<span class="small"> 억원</span></div>
+          </div>
+          <div class="ask-cell">
+            <div class="lbl">Pre-money</div>
+            <div class="val">[TBD]<span class="small"> 억원</span></div>
+          </div>
+        </div>
+        <div class="uop-card">
+          <div class="lbl">Use of Proceeds</div>
+          <div class="uop-bar">
+            <div class="seg s1" style="width: 40%;"></div>
+            <div class="seg s2" style="width: 30%;"></div>
+            <div class="seg s3" style="width: 20%;"></div>
+            <div class="seg s4" style="width: 10%;"></div>
+          </div>
+          <div class="uop-list">
+            <div class="uop-row">
+              <span class="dot s1"></span>
+              <span class="name">Platform 개발<span class="meta">앱·대시보드</span></span>
+              <span class="pct">40%</span>
+            </div>
+            <div class="uop-row">
+              <span class="dot s2"></span>
+              <span class="name">Knowledge Engine<span class="meta">Phase 1 시스템화</span></span>
+              <span class="pct">30%</span>
+            </div>
+            <div class="uop-row">
+              <span class="dot s3"></span>
+              <span class="name">핵심 인력 채용<span class="meta">개발 · B2B 영업</span></span>
+              <span class="pct">20%</span>
+            </div>
+            <div class="uop-row">
+              <span class="dot s4"></span>
+              <span class="name">B2B 영업 / 마케팅<span class="meta">초기 계약 가속</span></span>
+              <span class="pct">10%</span>
+            </div>
+          </div>
+          <div class="uop-foot">
+            Voice Biomarker R&amp;D는 본 라운드 자금에 포함되지 않음. <strong>TIPS 프로그램 (VC 2억 + 정부 8억) 별도 확보</strong>.
+          </div>
+        </div>
+        <div class="prove-card">
+          <div class="lbl">이번 라운드로 증명할 것</div>
+          <div class="prove-list">
+            <div class="pi"><span class="n">01</span><div>시스템화된 제품이 <strong>박사 1:1과 동등한 효과</strong>를 낸다는 것</div></div>
+            <div class="pi"><span class="n">02</span><div><strong>B2B 모델 검증</strong> — 5개 이상 팀 계약, 재계약률 80%+</div></div>
+            <div class="pi"><span class="n">03</span><div>Voice 데이터 누적으로 <strong>TIPS 신청 자격</strong> 확보</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="closing-footer">
+      <div class="closing-tagline">
+        볼은 <strong>타이틀리스트</strong>, 스윙은 <strong>레드베터</strong>,<br>
+        컨디셔닝은 — <strong>엔루틴</strong>.
+      </div>
+      <div class="contact-block">
+        <div class="name">㈜엔루틴 · 김희재 박사</div>
+        <div class="v">010-8776-5003</div>
+        <div class="v">skim82@nate.com</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
